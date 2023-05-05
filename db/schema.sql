@@ -25,6 +25,31 @@ CREATE TABLE users_skills (
     skill_id INTEGER REFERENCES skills (id) ON DELETE CASCADE
 );
 
+-- JOBS
+DROP TABLE IF EXISTS jobs;
+
+CREATE TABLE jobs (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(100),
+    company VARCHAR(25),
+    city VARCHAR(25)
+);
+
+DROP TABLE IF EXISTS users_jobs;
+
+CREATE TABLE users_jobs (
+    user_id INTEGER REFERENCES users (id) ON DELETE CASCADE,
+    job_id INTEGER REFERENCES jobs (id) ON DELETE CASCADE,
+    date_applied DATETIME
+);
+
+DROP TABLE IF EXISTS jobs_skills;
+
+CREATE TABLE jobs_skills (
+    job_id INTEGER REFERENCES jobs (id) ON DELETE CASCADE,
+    skill_id INTEGER REFERENCES skills (id) ON DELETE CASCADE
+);
+
 
 
 

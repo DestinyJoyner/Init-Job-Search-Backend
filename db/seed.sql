@@ -26,3 +26,12 @@ INSERT INTO users_skills (
 (1,2),
 (2,3),
 (3,3);
+
+INSERT INTO jobs (
+    title,
+    company,
+    city
+) VALUES 
+('Junior Dev', 'Peloton', 'New York'),
+('Full Stack Dev', 'Citi', 'Los Angeles'),
+('Back End Engineer', 'NJ Path', 'Jersey City');
