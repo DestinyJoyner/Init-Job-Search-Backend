@@ -9,25 +9,25 @@ const getAllJobs = async () => {
     }
 }
 
-const getOneJob = async (idVal) => {
+const getOneJob = async (jobID) => {
     try {
-        const oneJob = await db.one("SELECT * FROM jobs WHERE id=$1", idVal);
+        const oneJob = await db.one("SELECT * FROM jobs WHERE id=$1", jobID);
         return oneJob;
     } catch (error) {
         return error
     }
 }
 
-const createJob = async (job) => {
+const createJob = async ({ title,company,city,details,full_remote}) => {
     try {
         const newJob = await db.one(
             "INSERT INTO jobs (title, company, city, details, full_remote) VALUES ($1, $2, $3, $4, $5) RETURNING *",
             [
-                job.title,
-                job.company,
-                job.city,
-                job.details,
-                job.full_remote
+                title,
+                company,
+                city,
+                details,
+                full_remote
             ]
         )
         return newJob
@@ -36,17 +36,18 @@ const createJob = async (job) => {
     }
 }
 
-const updateJob = async (job, idVal) => {
+const updateJob = async (job, jobID) => {
+    const { title,company,city,details,full_remote} = job
     try {
         const updatedJob = await db.one(
             "UPDATE jobs SET title=$1, company=$2, city=$3, details=$4, full_remote=$5 WHERE id=$6 RETURNING *",
             [
-                job.title,
-                job.company,
-                job.city,
-                job.details,
-                job.full_remote,
-                idVal
+                title,
+                company,
+                city,
+                details,
+                full_remote,
+                jobID
             ]
         )
         return updatedJob
@@ -55,11 +56,11 @@ const updateJob = async (job, idVal) => {
     }
 }
 
-const deleteJob = async (idVal) => {
+const deleteJob = async (jobID) => {
     try {
         const deletedJob = await db.one(
             "DELETE FROM jobs WHERE id=$1 RETURNING *",
-            idVal
+            jobID
         );
         return deletedJob;
     } catch (error) {
