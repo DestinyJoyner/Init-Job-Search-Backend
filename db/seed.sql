@@ -2,11 +2,15 @@
 
 INSERT INTO users (
     first_name,
-    last_name
+    last_name,
+    school,
+    bio,
+    project_one,
+    project_two
 ) VALUES 
-('Dan', 'Mazzilli'),
-('Destiny', 'Joyner'),
-('Jahaad', 'Petty');
+('Dan', 'Mazzilli', 'Pursuit', 'Interested in sustainability, sports analytics, and resource optimization.', 'link1', 'link2'),
+('Destiny', 'Joyner', 'Pursuit', 'I like coding!', 'link1', 'link2'),
+('Jahaad', 'Petty', 'Pursuit', 'I like potatoes!', 'link1', 'link2');
 
 INSERT INTO skills (
     skill_name
@@ -29,11 +33,13 @@ INSERT INTO users_skills (
 INSERT INTO jobs (
     title,
     company,
-    city
+    city,
+    details,
+    full_remote
 ) VALUES 
-('Junior Dev', 'Peloton', 'New York'),
-('Full Stack Dev', 'Citi', 'Los Angeles'),
-('Back End Engineer', 'NJ Path', 'Jersey City');
+('Junior Dev', 'Peloton', 'New York', 'Come join our team in NYC!', false),
+('Full Stack Dev', 'Citi', 'Los Angeles', 'CITI is the best place to work at!', true),
+('Back End Engineer', 'NJ Path', 'Jersey City', 'Everyone loves NJ!', false);
 
 INSERT INTO jobs_skills (
     job_id,

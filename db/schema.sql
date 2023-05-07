@@ -8,7 +8,11 @@ DROP TABLE IF EXISTS users;
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     first_name VARCHAR(25) NOT NULL,
-    last_name VARCHAR(25) NOT NULL
+    last_name VARCHAR(25) NOT NULL,
+    school VARCHAR(50) NOT NULL,
+    bio VARCHAR(255),
+    project_one TEXT DEFAULT 'no link',
+    project_two TEXT DEFAULT 'no link'
 );
 
 DROP TABLE IF EXISTS skills;
@@ -30,9 +34,11 @@ DROP TABLE IF EXISTS jobs;
 
 CREATE TABLE jobs (
     id SERIAL PRIMARY KEY,
-    title VARCHAR(100),
-    company VARCHAR(25),
-    city VARCHAR(25)
+    title VARCHAR(100) NOT NULL,
+    company VARCHAR(25) NOT NULL,
+    city VARCHAR(25) NOT NULL,
+    details VARCHAR(4000) NOT NULL,
+    full_remote BOOL DEFAULT false
 );
 
 DROP TABLE IF EXISTS users_jobs;
