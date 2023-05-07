@@ -40,7 +40,7 @@ DROP TABLE IF EXISTS users_jobs;
 CREATE TABLE users_jobs (
     user_id INTEGER REFERENCES users (id) ON DELETE CASCADE,
     job_id INTEGER REFERENCES jobs (id) ON DELETE CASCADE,
-    date_applied DATETIME
+    date_applied DATE NOT NULL DEFAULT CURRENT_DATE
 );
 
 DROP TABLE IF EXISTS jobs_skills;
@@ -57,3 +57,5 @@ CREATE TABLE jobs_skills (
 
 -- psql JOIN command reference :
 -- SELECT * FROM users_skills JOIN users ON users.id = users_skills.user_id JOIN skills ON skills.id = users_skills.skill_id  WHERE user_id= 2;
+-- all job applications with user and job details
+-- SELECT * FROM users_jobs JOIN users ON users.id = users_jobs.user_id JOIN jobs ON jobs.id = users_jobs.job_id;

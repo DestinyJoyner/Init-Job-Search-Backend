@@ -8,7 +8,6 @@ INSERT INTO users (
 ('Destiny', 'Joyner'),
 ('Jahaad', 'Petty');
 
-
 INSERT INTO skills (
     skill_name
 ) VALUES
@@ -21,7 +20,7 @@ INSERT INTO users_skills (
     skill_id
 ) VALUES 
 (1,3),
-(3,2),
+(3,1),
 (2,2),
 (1,2),
 (2,3),
@@ -35,3 +34,23 @@ INSERT INTO jobs (
 ('Junior Dev', 'Peloton', 'New York'),
 ('Full Stack Dev', 'Citi', 'Los Angeles'),
 ('Back End Engineer', 'NJ Path', 'Jersey City');
+
+INSERT INTO jobs_skills (
+    job_id,
+    skill_id
+) VALUES
+(1, 2),
+(1, 3),
+(2, 1),
+(2, 2),
+(3, 1),
+(3, 3);
+
+INSERT INTO users_jobs (
+    user_id,
+    job_id,
+    date_applied
+) VALUES
+(1, 1, CURRENT_DATE),
+(2, 1, CURRENT_DATE),
+(3, 3, CURRENT_DATE);
