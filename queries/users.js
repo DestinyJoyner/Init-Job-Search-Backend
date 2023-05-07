@@ -9,17 +9,14 @@ const getAllUsers = async () => {
   }
 };
 
-// const getUserByID = async (userID) => {
-//   try {
-//     const oneUser = await db.one("SELECT * FROM users WHERE id=$1", userID);
-//     return oneUser;
-//   } catch (error) {
-//     return error;
-//   }
-// };
 const getUserByID = async (userID) => {
   try {
-    const oneUser = await db.any("SELECT * FROM users_skills JOIN users ON users.id = users_skills.user_id JOIN skills ON skills.id = users_skills.skill_id WHERE user_id=$1", userID);
+    const oneUser = await db.one("SELECT * FROM users WHERE id=$1", userID);
+    const userSkills = await db.any(
+      "SELECT * FROM users_skills JOIN skills ON skills.id = users_skills.skill_id WHERE user_id=$1",
+      userID
+    );
+    oneUser.skills = userSkills.map(({ skill_name }) => skill_name);
     return oneUser;
   } catch (error) {
     return error;
