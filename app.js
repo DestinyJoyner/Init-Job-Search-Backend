@@ -4,6 +4,7 @@ const cors = require("cors");
 const morgan = require("morgan");
 const userController = require("./controllers/usersController.js");
 const jobsController = require("./controllers/jobsController.js");
+const skillsController = require("./controllers/skillsController.js")
 
 // CONFIGURE
 const app = express();
@@ -15,6 +16,7 @@ app.use(cors());
 // CONTROLLERS
 app.use("/users", userController);
 app.use("/jobs", jobsController);
+app.use("/skills", skillsController);
 
 // ROUTES
 app.get("/", (req, res) => {
