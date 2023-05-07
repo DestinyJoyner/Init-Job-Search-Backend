@@ -1,10 +1,11 @@
 const express = require("express");
-const skills = express.Router();
+const skills = express.Router({mergeParams: true});
 const { getAllSkills, getSkillByID } = require("../queries/skills");
 
 // Index
 skills.get("/", async (req, res) => {
-  const allSkills = await getAllSkills();
+  const {userID} = req.params 
+  const allSkills = await getAllSkills(userID);
   if (allSkills.length) {
     res.status(200).json(allSkills);
   } else {

@@ -1,11 +1,13 @@
 const express = require("express");
-const users = express.Router();
+const users = express.Router({});
 const {
   getAllUsers,
   getUserByID,
   createUser,
   updateUser,
 } = require("../queries/users.js");
+const skillsController = require("./skillsController.js")
+users.use("/:userID/skills", skillsController)
 
 // Index
 users.get("/", async (req, res) => {
@@ -26,7 +28,9 @@ users.get("/:id", async (req, res) => {
   if (!user.message) {
     res.status(200).json(user);
   } else {
-    res.redirect("/not-found");
+    // res.redirect("/not-found");
+    res.status(500).json(user.message)
+
   }
 });
 
