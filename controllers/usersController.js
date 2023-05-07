@@ -47,7 +47,7 @@ users.put("/:id", async (req, res) => {
   if (!updatedUser.message) {
     res.status(200).json(updatedUser);
   } else {
-    res.redirect("/not-found");
+    res.status(500).json({ error: updatedUser.message });
   }
 });
 
