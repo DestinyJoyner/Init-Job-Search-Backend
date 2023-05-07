@@ -3,61 +3,61 @@ const jobs = express.Router()
 const { getAllJobs, getOneJob, createJob, updateJob, deleteJob} = require("../queries/jobs.js")
 
 // INDEX
-jobs.get("/", async (req, resp) => {
+jobs.get("/", async (req, res) => {
     const allJobs = await getAllJobs()
 
     if(allJobs.length){
-        resp.status(200).json(allJobs);
+        res.status(200).json(allJobs);
     }
     else {
-        resp.status(500).json({ Error: "server error"});
+        res.status(500).json({ Error: "server error"});
     }
 })
 
 // SHOW
-jobs.get("/:id", async (req, resp) => {
+jobs.get("/:id", async (req, res) => {
     const { id } = req.params;
-    const singleJob = await getOneJob(id);
+    const oneJob = await getOneJob(id);
 
-    if(singleJob.details){
-        resp.status(200).json(singleJob)
+    if(!oneJob.message){
+        res.status(200).json(oneJob)
     } else {
-        resp.redirect("/not-found")
+        res.redirect("/not-found")
     }
 })
 
 // CREATE
-jobs.post("/", async ( req, resp ) => {
-    const createdJob = await createJob(req.body)
+jobs.post("/", async ( req, res ) => {
+    const newJob = await createJob(req.body)
 
-    if(createdJob.details){
-        resp.status(200).json(createdJob)
+    if(!newJob.message){
+        res.status(200).json(newJob)
     } else {
-        resp.status(500).json({ Error: createdJob})
+        res.status(500).json({ Error: newJob.message})
     }
 })
 
 // DELETE
-jobs.delete("/:id", async ( req, resp) => {
+jobs.delete("/:id", async ( req, res) => {
     const { id } = req.params 
     const deletedJob = await deleteJob(id)
 
-    if(deletedJob.details){
-        resp.status(200).json(deletedJob)
+    if(!deletedJob.message){
+        res.status(200).json(deletedJob)
     } else {
-        resp.status(500).json({ Error: deletedJob})
+        res.status(500).json({ Error: deletedJob.message})
     }
 })
 
 // UPDATE
-jobs.put("/:id", async (req, resp) => {
+jobs.put("/:id", async (req, res) => {
     const { id } = req.params
     const updatedJob = await updateJob(req.body, id)
 
-    if(updatedJob.details){
-        resp.status(200).json(updatedJob)
+    if(!updatedJob.message){
+        res.status(200).json(updatedJob)
     } else {
-        resp.status(500).json({ Error: updatedJob})
+        res.status(500).json({ Error: updatedJob.message})
     }
 })
 
