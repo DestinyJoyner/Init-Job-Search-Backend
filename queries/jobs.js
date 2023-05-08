@@ -10,7 +10,7 @@ const getAllJobs = async () => {
       if (acc[val]) {
         acc[val] = {
           ...acc[val],
-          ["skill_name"]: [...[acc[val]["skill_name"]], e["skill_name"]],
+          ["skill_name"]: [...[acc[val]["skill_name"]], e["skill_name"]].flat(),
         };
         return acc;
       } else {
