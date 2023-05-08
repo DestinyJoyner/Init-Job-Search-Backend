@@ -2,8 +2,15 @@ const db = require("../db/dbConfig.js");
 
 const getAllJobs = async () => {
   try {
-    const allJobs = await db.any("SELECT * FROM jobs");
-    return allJobs;
+    const allJobIDs = await db.any("SELECT id FROM jobs");
+
+    return allJobIDs.map(async ({ id }) => {
+      const jobSkills = await db.any(
+        "SELECT skill_name FROM jobs_skills JOIN skills ON skills.id = jobs_skills.skill_id WHERE job_id=$1",
+        id
+      );
+      return jobSkills;
+    });
   } catch (error) {
     return error;
   }
