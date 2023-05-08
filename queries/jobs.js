@@ -2,22 +2,26 @@ const db = require("../db/dbConfig.js");
 
 const getAllJobs = async () => {
   try {
-    const allJobIDs = await db.any("SELECT id FROM jobs");
-    const returnArr = []
-    for (let i = 0; i < allJobIDs.length; i++) {
-      const job_id = allJobIDs[i].id;
-      const oneJob = await getOneJob(job_id)
-      returnArr.push(oneJob)
+    const allJobIDs = await db.any(
+      "SELECT * FROM jobs_skills JOIN jobs ON jobs.id = jobs_skills.job_id JOIN skills ON skills.id = jobs_skills.skill_id"
+    );
+    const allJobDetails = allJobIDs.reduce((acc, e) => {
+      const val = e["job_id"];
+      if (acc[val]) {
+        acc[val] = {
+          ...acc[val],
+          ["skill_name"]: [...[acc[val]["skill_name"]], e["skill_name"]],
+        };
+        return acc;
+      } else {
+        return (acc = { ...acc, [e["job_id"]]: e });
+      }
+    }, {});
+    const arr = [];
+    for (let i in allJobDetails) {
+      arr.push(allJobDetails[i]);
     }
-    return returnArr
-    // map code for above
-    // return allJobIDs.map(async ({ id }) => {
-    //   const jobSkills = await db.any(
-    //     "SELECT skill_name FROM jobs_skills JOIN skills ON skills.id = jobs_skills.skill_id WHERE job_id=$1",
-    //     id
-    //   );
-    //   return jobSkills;
-    // });
+    return arr;
   } catch (error) {
     return error;
   }

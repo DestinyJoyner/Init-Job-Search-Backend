@@ -11,12 +11,11 @@ const {
 // INDEX
 jobs.get("/", async (req, res) => {
   const allJobs = await getAllJobs();
-
-  //   if (allJobs.length) {
-  res.status(200).json(allJobs);
-  //   } else {
-  //     res.status(500).json({ Error: allJobs });
-  //   }
+  if (allJobs.length) {
+    res.status(200).json(allJobs);
+  } else {
+    res.status(500).json({ Error: "Server Error" });
+  }
 });
 
 // SHOW
