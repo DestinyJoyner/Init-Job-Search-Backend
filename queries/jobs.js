@@ -3,14 +3,21 @@ const db = require("../db/dbConfig.js");
 const getAllJobs = async () => {
   try {
     const allJobIDs = await db.any("SELECT id FROM jobs");
-
-    return allJobIDs.map(async ({ id }) => {
-      const jobSkills = await db.any(
-        "SELECT skill_name FROM jobs_skills JOIN skills ON skills.id = jobs_skills.skill_id WHERE job_id=$1",
-        id
-      );
-      return jobSkills;
-    });
+    const returnArr = []
+    for (let i = 0; i < allJobIDs.length; i++) {
+      const job_id = allJobIDs[i].id;
+      const oneJob = await getOneJob(job_id)
+      returnArr.push(oneJob)
+    }
+    return returnArr
+    // map code for above
+    // return allJobIDs.map(async ({ id }) => {
+    //   const jobSkills = await db.any(
+    //     "SELECT skill_name FROM jobs_skills JOIN skills ON skills.id = jobs_skills.skill_id WHERE job_id=$1",
+    //     id
+    //   );
+    //   return jobSkills;
+    // });
   } catch (error) {
     return error;
   }
