@@ -1,10 +1,15 @@
 const db = require("../db/dbConfig.js");
+const { alreadyExists } = require("./queryValidations.js");
 
 const createUserSkill = async ({
     user_id,
     skill_id
 }) => {
-    try {
+    const exist = await alreadyExists({ ["user_id"]: user_id, ["skill_id"]: skill_id }, "users_skills")
+    if(exist){
+        return {error: "Entry already exists!"}
+    } else {
+      try {
         const newUserSkill = await db.one(
             "INSERT INTO users_skills (user_id, skill_id) VALUES ($1, $2) RETURNING *",
             [
@@ -15,7 +20,9 @@ const createUserSkill = async ({
         return newUserSkill
     } catch (error) {
         return error;
+    }  
     }
+    
 }
 
 const deleteUserSkill = async ({
