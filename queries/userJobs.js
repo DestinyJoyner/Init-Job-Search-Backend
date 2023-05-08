@@ -3,7 +3,7 @@ const db = require("../db/dbConfig.js");
 const getAllUserJobs = async (userID) => {
     // getting all jobs linked to userID and joining jobs table with users_jobs for job details
     try {
-        const allUserJobs = await db.any("SELECT * FROM users_jobs JOIN jobs ON jobs.id = users_jobs.job_id WHERE user_id=$1", userID)
+        const allUserJobs = await db.any("SELECT id, title, company, date_applied FROM users_jobs JOIN jobs ON jobs.id = users_jobs.job_id WHERE user_id=$1", userID)
         
         return allUserJobs
         
