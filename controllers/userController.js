@@ -6,6 +6,7 @@ const {
   createUser,
   updateUser,
 } = require("../queries/users.js");
+const { hashPass } = require("../middleware/passSecuring.js")
 
 // Index
 users.get("/", async (req, res) => {
@@ -32,7 +33,7 @@ users.get("/:id", async (req, res) => {
 });
 
 // Create
-users.post("/", async (req, res) => {
+users.post("/", hashPass, async (req, res) => {
   const newUser = await createUser(req.body);
   if (!newUser.message) {
     res.status(200).json(newUser);
