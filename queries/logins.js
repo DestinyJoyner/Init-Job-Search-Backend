@@ -10,4 +10,16 @@ const getAllLogins = async () => {
   }
 };
 
-module.exports = { getAllLogins };
+// Get credentials by email
+const getLoginByEmail = async (email) => {
+  try {
+    const loginCredentials = await db.one("SELECT * FROM logins WHERE email=$1", email);
+    return loginCredentials;
+  } catch (error) {
+    return error;
+  }
+}
+
+
+
+module.exports = { getAllLogins, getLoginByEmail };
