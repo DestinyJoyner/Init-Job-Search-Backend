@@ -38,7 +38,8 @@ users.post("/", hashPass, async (req, res) => {
   if (!newUser.message) {
     res.status(200).json(newUser);
   } else {
-    res.redirect("/not-found");
+    // res.redirect("/not-found");
+    res.json({error: newUser.message})
   }
 });
 

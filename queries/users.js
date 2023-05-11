@@ -23,21 +23,25 @@ const getUserByID = async (userID) => {
   }
 };
 
-const createUser = async ({
- profile,
- login
-}) => {
+const createUser = async ({ profile, skills, login }) => {
   // conditionals for projects tbd
-  const {first_name, last_name, school, bio, project_one, project_two} = profile;
-  const {email, password} = login;
+  const { first_name, last_name, school, bio, project_one, project_two } =
+    profile;
+  const { email, password } = login;
   try {
     const newUser = await db.one(
       "INSERT INTO users (first_name, last_name, school, bio, project_one, project_two) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
       [first_name, last_name, school, bio, project_one, project_two]
     );
-    const newLogin = await db.one(
+    db.one(
       "INSERT INTO logins (email, password, user_id) VALUES ($1, $2, $3) RETURNING *",
       [email, password, newUser.id]
+    );
+    skills.forEach((e) =>
+      db.one("INSERT INTO users_skills (user_id, skill_id) VALUES ($1, $2)RETURNING *", [
+        newUser.id,
+        e,
+      ])
     );
     return newUser;
   } catch (error) {
