@@ -3,7 +3,7 @@ const db = require("../db/dbConfig.js");
 const getAllJobs = async () => {
   try {
     const allJobIDs = await db.any(
-      "SELECT * FROM jobs_skills JOIN jobs ON jobs.id = jobs_skills.job_id JOIN skills ON skills.id = jobs_skills.skill_id"
+      "SELECT job_id, title, company, city, details, full_remote, skill_name FROM jobs_skills JOIN jobs ON jobs.id = jobs_skills.job_id JOIN skills ON skills.id = jobs_skills.skill_id"
     );
     const allJobDetails = allJobIDs.reduce((acc, e) => {
       const val = e["job_id"];
