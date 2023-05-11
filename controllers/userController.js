@@ -7,6 +7,7 @@ const {
   updateUser,
 } = require("../queries/users.js");
 const { hashPass } = require("../middleware/passSecuring.js")
+const { emailValidation } = require("../middleware/emailValidation.js")
 
 // Index
 users.get("/", async (req, res) => {
@@ -33,7 +34,7 @@ users.get("/:id", async (req, res) => {
 });
 
 // Create
-users.post("/", hashPass, async (req, res) => {
+users.post("/", emailValidation, hashPass, async (req, res) => {
   const newUser = await createUser(req.body);
   if (!newUser.message) {
     res.status(200).json(newUser);
