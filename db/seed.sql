@@ -12,6 +12,15 @@ INSERT INTO users (
 ('Destiny', 'Joyner', 'Pursuit', 'I like coding!', 'link1', 'link2'),
 ('Jahaad', 'Petty', 'Pursuit', 'I like potatoes!', 'link1', 'link2');
 
+INSERT INTO logins (
+    email,
+    password,
+    user_id
+) VALUES
+('dm@email.com', 'password', 1),
+('dj@email.com', 'password', 2),
+('jp@email.com', 'password', 3);
+
 INSERT INTO skills (
     skill_name
 ) VALUES

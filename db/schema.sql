@@ -15,6 +15,14 @@ CREATE TABLE users (
     project_two TEXT DEFAULT 'no link'
 );
 
+DROP TABLE IF EXISTS logins;
+
+CREATE TABLE logins (
+    email VARCHAR(50) NOT NULL,
+    password TEXT NOT NULL,
+    user_id INTEGER REFERENCES users (id) ON DELETE CASCADE
+);
+
 DROP TABLE IF EXISTS skills;
 
 CREATE TABLE skills (
