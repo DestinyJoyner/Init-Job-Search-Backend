@@ -37,7 +37,7 @@ CREATE TABLE users_skills (
     skill_id INTEGER REFERENCES skills (id) ON DELETE CASCADE
 );
 
--- JOBS
+
 DROP TABLE IF EXISTS jobs;
 
 CREATE TABLE jobs (
