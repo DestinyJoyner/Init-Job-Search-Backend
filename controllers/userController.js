@@ -6,8 +6,12 @@ const {
   createUser,
   updateUser,
 } = require("../queries/users.js");
+const { caseConversion, userSchema } = require("../middleware/schemaValidations/userValidation.js")
 const { hashPass, verifyToken } = require("../middleware/authorization.js")
-const { emailValidation } = require("../middleware/emailValidation.js")
+const { emailValidation } = require("../middleware/emailValidation.js");
+const { loginSchema } = require("../middleware/schemaValidations/loginValidation.js");
+const { validationError } = require("../middleware/schemaValidations/errorValidation.js")
+
 
 // Index
 users.get("/", async (req, res) => {
@@ -34,18 +38,18 @@ users.get("/:id", verifyToken, async (req, res) => {
 });
 
 // Create
-users.post("/", emailValidation, hashPass, async (req, res) => {
+users.post("/", caseConversion, emailValidation, loginSchema, userSchema, validationError, hashPass, async (req, res) => {
   const newUser = await createUser(req.body);
   if (!newUser.message) {
     res.status(200).json(newUser);
   } else {
     // res.redirect("/not-found");
-    res.json({error: newUser.message})
+    res.json({error: newUser})
   }
 });
 
 // Update
-users.put("/:id", verifyToken, async (req, res) => {
+users.put("/:id", caseConversion, userSchema, validationError, verifyToken, async (req, res) => {
   const { id } = req.params;
   const updatedUser = await updateUser(req.body, id);
   if (!updatedUser.message) {

@@ -2,7 +2,7 @@ const { checkEmail } = require("../queries/emails.js");
 
 const emailValidation = async (req, res, next) => {
   const { email } = req.body.login;
-  console.log(email)
+  // console.log(email)
   const isEmailUnique = await checkEmail(email);
   if (isEmailUnique) {
     next();
