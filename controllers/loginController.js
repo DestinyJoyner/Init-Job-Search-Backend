@@ -27,6 +27,7 @@ logins.get("/:email", async (req, res) => {
 logins.post("/", userLogin, async (req, res) => {
     // add tokens
     // return user_id for front-end and the token
+    console.log(req.body)
     res.status(200).json({message: "You are signed in!"});
 })
 

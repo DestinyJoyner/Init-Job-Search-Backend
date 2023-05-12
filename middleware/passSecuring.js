@@ -1,5 +1,9 @@
 const bcrypt = require("bcrypt");
+const JWT = require("jsonwebtoken");
+const dotenv = require("dotenv");
 const { getLoginByEmail } = require("../queries/logins.js");
+
+dotenv.config();
 
 // genSalt will generate the default number for the salting rounds
 // bcrypt.hash will take the inputted password by the user and salt and hash it
@@ -15,6 +19,13 @@ const hashPass = (req, res, next) => {
   });
 };
 
+// JWT generate token
+// Refresh Token To Be Added
+const generateWebToken = (email) => {
+  return JWT.sign({ email: email }, process.env.SECRET_TOKEN, {
+    expiresIn: "24hr",
+  });
+};
 
 // initially check if email is linked to an account in the db
 // if entered password matches the one in the db then proceed
@@ -25,6 +36,8 @@ const userLogin = async (req, res, next) => {
   if (!credentials.message) {
     const isPassValid = await bcrypt.compare(password, credentials.password);
     if (isPassValid) {
+      const token = generateWebToken(email)
+      req.body.token = token;
       next();
     } else {
       res.status(400).json({ error: "Invalid password" });
@@ -36,5 +49,5 @@ const userLogin = async (req, res, next) => {
 
 module.exports = {
   hashPass,
-  userLogin
+  userLogin,
 };
