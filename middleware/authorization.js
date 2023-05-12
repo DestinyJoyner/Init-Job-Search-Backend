@@ -36,8 +36,9 @@ const userLogin = async (req, res, next) => {
   if (!credentials.message) {
     const isPassValid = await bcrypt.compare(password, credentials.password);
     if (isPassValid) {
-      const token = generateWebToken(email)
+      const token = generateWebToken(email);
       req.body.token = token;
+      req.body["user_id"] = credentials["user_id"]
       next();
     } else {
       res.status(400).json({ error: "Invalid password" });
@@ -47,7 +48,23 @@ const userLogin = async (req, res, next) => {
   }
 };
 
+// verify token for accessing and updating user profile data
+const verifyToken = (req, res, next) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+  if (!token) {
+    return res.status(403).send("A token is required for authentication");
+  }
+  try {
+    req.decoded = JWT.verify(token, process.env.SECRET_TOKEN);
+  } catch (error) {
+    return res.status(401).send("Invalid Token");
+  }
+  return next();
+};
+
 module.exports = {
   hashPass,
   userLogin,
+  verifyToken
 };
