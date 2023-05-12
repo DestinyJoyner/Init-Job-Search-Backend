@@ -5,6 +5,7 @@ const {
   getUserByID,
   createUser,
   updateUser,
+  deleteUser,
 } = require("../queries/users.js");
 const { caseConversion, userSchema } = require("../middleware/schemaValidations/userValidation.js")
 const { hashPass, verifyToken } = require("../middleware/authorization.js")
@@ -59,4 +60,42 @@ users.put("/:id", caseConversion, userSchema, validationError, verifyToken, asyn
   }
 });
 
+// DELETE
+users.delete("/:id", verifyToken, async (req, res) => {
+  const { id } = req.params
+  const deletedUser = await deleteUser(id)
+  if(!deletedUser.message){
+    res.status(200).json(deletedUser)
+  }
+  else {
+    res.status(500).json({Error: deletedUser.message})
+  }
+})
+
 module.exports = users;
+
+
+
+
+/* 
+  REQ.BODY SHAPE EXAMPLE
+  ("SKILLS KEY MUST BE INCLUDED/ CAN BE EMPTY ARRAY")
+
+  {
+    "login": {
+        "email": "user1@email.com",
+        "password": "1Password!"
+    },
+    "profile":
+    {
+        "first_name": "Test",
+        "last_name": "Mazzilli",
+        "school": "Pursuit",
+        "bio": "Interested in sustainability, sports analytics, and resource optimization.",
+        "project_one": "",
+        "project_two": ""
+    },
+    "skills": []
+
+}
+*/
