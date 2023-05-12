@@ -2,12 +2,13 @@
 const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
-const userController = require("./controllers/usersController.js");
-const jobsController = require("./controllers/jobsController.js");
-const skillsController = require("./controllers/skillsController.js")
-const userSkillsController = require("./controllers/userSkillsController.js")
-const jobSkillsController = require("./controllers/jobSkillsController.js")
-const userJobsController = require("./controllers/userJobsController.js")
+const userController = require("./controllers/userController.js");
+const loginController = require("./controllers/loginController.js")
+const jobController = require("./controllers/jobController.js");
+const skillController = require("./controllers/skillController.js")
+const userSkillController = require("./controllers/userSkillController.js")
+const jobSkillController = require("./controllers/jobSkillController.js")
+const userJobController = require("./controllers/userJobController.js")
 
 // CONFIGURE
 const app = express();
@@ -18,11 +19,12 @@ app.use(morgan("tiny"));
 app.use(cors());
 // CONTROLLERS
 app.use("/users", userController);
-app.use("/jobs", jobsController);
-app.use("/skills", skillsController);
-app.use("/user-skills", userSkillsController);
-app.use("/job-skills", jobSkillsController)
-app.use("/user-jobs", userJobsController)
+app.use("/logins", loginController);
+app.use("/jobs", jobController);
+app.use("/skills", skillController);
+app.use("/user-skills", userSkillController);
+app.use("/job-skills", jobSkillController)
+app.use("/user-jobs", userJobController)
 
 // ROUTES
 app.get("/", (req, res) => {

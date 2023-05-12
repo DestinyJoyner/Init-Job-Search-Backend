@@ -6,6 +6,8 @@ const {
   createUser,
   updateUser,
 } = require("../queries/users.js");
+const { hashPass, verifyToken } = require("../middleware/authorization.js")
+const { emailValidation } = require("../middleware/emailValidation.js")
 
 // Index
 users.get("/", async (req, res) => {
@@ -20,7 +22,7 @@ users.get("/", async (req, res) => {
 });
 
 // Show
-users.get("/:id", async (req, res) => {
+users.get("/:id", verifyToken, async (req, res) => {
   const { id } = req.params;
   const user = await getUserByID(id);
   if (!user.message) {
@@ -32,17 +34,18 @@ users.get("/:id", async (req, res) => {
 });
 
 // Create
-users.post("/", async (req, res) => {
+users.post("/", emailValidation, hashPass, async (req, res) => {
   const newUser = await createUser(req.body);
   if (!newUser.message) {
     res.status(200).json(newUser);
   } else {
-    res.redirect("/not-found");
+    // res.redirect("/not-found");
+    res.json({error: newUser.message})
   }
 });
 
 // Update
-users.put("/:id", async (req, res) => {
+users.put("/:id", verifyToken, async (req, res) => {
   const { id } = req.params;
   const updatedUser = await updateUser(req.body, id);
   if (!updatedUser.message) {
