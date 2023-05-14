@@ -7,12 +7,18 @@ const {
   updateUser,
   deleteUser,
 } = require("../queries/users.js");
-const { caseConversion, userSchema } = require("../middleware/schemaValidations/userValidation.js")
-const { hashPass, verifyToken } = require("../middleware/authorization.js")
+const {
+  caseConversion,
+  userSchema,
+} = require("../middleware/schemaValidations/userValidation.js");
+const { hashPass, verifyToken } = require("../middleware/authorization.js");
 const { emailValidation } = require("../middleware/emailValidation.js");
-const { loginSchema } = require("../middleware/schemaValidations/loginValidation.js");
-const { validationError } = require("../middleware/schemaValidations/errorValidation.js")
-
+const {
+  loginSchema,
+} = require("../middleware/schemaValidations/loginValidation.js");
+const {
+  validationError,
+} = require("../middleware/schemaValidations/errorValidation.js");
 
 // Index
 users.get("/", async (req, res) => {
@@ -39,43 +45,56 @@ users.get("/:id", verifyToken, async (req, res) => {
 });
 
 // Create
-users.post("/", caseConversion, emailValidation, loginSchema, userSchema, validationError, hashPass, async (req, res) => {
-  const newUser = await createUser(req.body);
-  if (!newUser.message) {
-    res.status(200).json(newUser);
-  } else {
-    // res.redirect("/not-found");
-    res.json({error: newUser})
+users.post(
+  "/",
+  caseConversion,
+  emailValidation,
+  loginSchema,
+  userSchema,
+  validationError,
+  hashPass,
+  async (req, res) => {
+    const newUser = await createUser(req.body);
+    if (!newUser.message) {
+      res.status(200).json(newUser);
+    } else {
+      // res.redirect("/not-found");
+      res.json({ error: newUser });
+    }
   }
-});
+);
 
 // Update
-users.put("/:id", caseConversion, userSchema, validationError, verifyToken, async (req, res) => {
-  const { id } = req.params;
-  const updatedUser = await updateUser(req.body, id);
-  if (!updatedUser.message) {
-    res.status(200).json(updatedUser);
-  } else {
-    res.status(500).json({ error: updatedUser.message });
+users.put(
+  "/:id",
+  caseConversion,
+  userSchema,
+  validationError,
+  verifyToken,
+  async (req, res) => {
+    const { id } = req.params;
+    const updatedUser = await updateUser(req.body, id);
+    const updatedUserProfile = await getUserByID(id);
+    if (!updatedUser.message) {
+      res.status(200).json(updatedUserProfile);
+    } else {
+      res.status(500).json({ error: updatedUser.message });
+    }
   }
-});
+);
 
 // DELETE
 users.delete("/:id", verifyToken, async (req, res) => {
-  const { id } = req.params
-  const deletedUser = await deleteUser(id)
-  if(!deletedUser.message){
-    res.status(200).json(deletedUser)
+  const { id } = req.params;
+  const deletedUser = await deleteUser(id);
+  if (!deletedUser.message) {
+    res.status(200).json(deletedUser);
+  } else {
+    res.status(500).json({ Error: deletedUser.message });
   }
-  else {
-    res.status(500).json({Error: deletedUser.message})
-  }
-})
+});
 
 module.exports = users;
-
-
-
 
 /* 
   REQ.BODY SHAPE EXAMPLE
