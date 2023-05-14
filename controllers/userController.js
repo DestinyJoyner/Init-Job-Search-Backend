@@ -5,9 +5,20 @@ const {
   getUserByID,
   createUser,
   updateUser,
+  deleteUser,
 } = require("../queries/users.js");
-const { hashPass, verifyToken } = require("../middleware/authorization.js")
-const { emailValidation } = require("../middleware/emailValidation.js")
+const {
+  caseConversion,
+  userSchema,
+} = require("../middleware/schemaValidations/userValidation.js");
+const { hashPass, verifyToken } = require("../middleware/authorization.js");
+const { emailValidation } = require("../middleware/emailValidation.js");
+const {
+  loginSchema,
+} = require("../middleware/schemaValidations/loginValidation.js");
+const {
+  validationError,
+} = require("../middleware/schemaValidations/errorValidation.js");
 
 // Index
 users.get("/", async (req, res) => {
@@ -34,25 +45,76 @@ users.get("/:id", verifyToken, async (req, res) => {
 });
 
 // Create
-users.post("/", emailValidation, hashPass, async (req, res) => {
-  const newUser = await createUser(req.body);
-  if (!newUser.message) {
-    res.status(200).json(newUser);
-  } else {
-    // res.redirect("/not-found");
-    res.json({error: newUser.message})
+users.post(
+  "/",
+  caseConversion,
+  emailValidation,
+  loginSchema,
+  userSchema,
+  validationError,
+  hashPass,
+  async (req, res) => {
+    const newUser = await createUser(req.body);
+    if (!newUser.message) {
+      res.status(200).json(newUser);
+    } else {
+      // res.redirect("/not-found");
+      res.json({ error: newUser });
+    }
   }
-});
+);
 
 // Update
-users.put("/:id", verifyToken, async (req, res) => {
+users.put(
+  "/:id",
+  caseConversion,
+  userSchema,
+  validationError,
+  verifyToken,
+  async (req, res) => {
+    const { id } = req.params;
+    const updatedUser = await updateUser(req.body, id);
+    const updatedUserProfile = await getUserByID(id);
+    if (!updatedUser.message) {
+      res.status(200).json(updatedUserProfile);
+    } else {
+      res.status(500).json({ error: updatedUser.message });
+    }
+  }
+);
+
+// DELETE
+users.delete("/:id", verifyToken, async (req, res) => {
   const { id } = req.params;
-  const updatedUser = await updateUser(req.body, id);
-  if (!updatedUser.message) {
-    res.status(200).json(updatedUser);
+  const deletedUser = await deleteUser(id);
+  if (!deletedUser.message) {
+    res.status(200).json(deletedUser);
   } else {
-    res.status(500).json({ error: updatedUser.message });
+    res.status(500).json({ Error: deletedUser.message });
   }
 });
 
 module.exports = users;
+
+/* 
+  REQ.BODY SHAPE EXAMPLE
+  ("SKILLS KEY MUST BE INCLUDED/ CAN BE EMPTY ARRAY")
+
+  {
+    "login": {
+        "email": "user1@email.com",
+        "password": "1Password!"
+    },
+    "profile":
+    {
+        "first_name": "Test",
+        "last_name": "Mazzilli",
+        "school": "Pursuit",
+        "bio": "Interested in sustainability, sports analytics, and resource optimization.",
+        "project_one": "",
+        "project_two": ""
+    },
+    "skills": []
+
+}
+*/

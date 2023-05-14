@@ -1,4 +1,5 @@
 const db = require("../db/dbConfig.js");
+const { deleteAllUserSkills } = require("./userSkills.js");
 
 const getAllUsers = async () => {
   try {
@@ -38,10 +39,10 @@ const createUser = async ({ profile, skills, login }) => {
       [email, password, newUser.id]
     );
     skills.forEach((e) =>
-      db.one("INSERT INTO users_skills (user_id, skill_id) VALUES ($1, $2)RETURNING *", [
-        newUser.id,
-        e,
-      ])
+      db.one(
+        "INSERT INTO users_skills (user_id, skill_id) VALUES ($1, $2)RETURNING *",
+        [newUser.id, e]
+      )
     );
     return newUser;
   } catch (error) {
@@ -49,14 +50,34 @@ const createUser = async ({ profile, skills, login }) => {
   }
 };
 
-const updateUser = async (user, userID) => {
-  const { first_name, last_name, school, bio, project_one, project_two } = user;
+const updateUser = async ({ profile, skills }, userID) => {
+  const { first_name, last_name, school, bio, project_one, project_two } =
+    profile;
   try {
     const updatedUser = await db.one(
       "UPDATE users SET first_name=$1, last_name=$2, school=$3, bio=$4, project_one=$5, project_two=$6 WHERE id=$7 RETURNING *",
       [first_name, last_name, school, bio, project_one, project_two, userID]
     );
+    deleteAllUserSkills(userID);
+    skills.forEach((e) =>
+      db.one(
+        "INSERT INTO users_skills (user_id, skill_id) VALUES ($1, $2)RETURNING *",
+        [userID, e]
+      )
+    );
     return updatedUser;
+  } catch (error) {
+    return error;
+  }
+};
+
+const deleteUser = async (userID) => {
+  try {
+    const deletedUser = await db.one(
+      "DELETE FROM users WHERE id=$1 RETURNING *",
+      userID
+    );
+    return deletedUser;
   } catch (error) {
     return error;
   }
@@ -67,4 +88,5 @@ module.exports = {
   getUserByID,
   createUser,
   updateUser,
+  deleteUser,
 };
