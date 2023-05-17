@@ -26,7 +26,20 @@ INSERT INTO skills (
 ) VALUES
 ('JavaScript'),
 ('Express'),
-('React');
+('React'),
+('Python'),
+('Java'),
+('HTML'),
+('CSS'),
+('C++'),
+('Ruby'),
+('SQL'),
+('Swift'),
+('Go'),
+('C'),
+('C#'),
+('PHP'),
+;
 
 INSERT INTO users_skills (
     user_id,
