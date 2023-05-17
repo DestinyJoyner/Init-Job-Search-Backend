@@ -46,7 +46,8 @@ CREATE TABLE jobs (
     company VARCHAR(25) NOT NULL,
     city VARCHAR(25) NOT NULL,
     details VARCHAR(4000) NOT NULL,
-    full_remote BOOL DEFAULT false
+    full_remote BOOL DEFAULT false,
+    tasks VARCHAR(4000) NOT NULL
 );
 
 DROP TABLE IF EXISTS users_jobs;
