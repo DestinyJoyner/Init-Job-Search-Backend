@@ -26,13 +26,13 @@ const getUserByID = async (userID) => {
 
 const createUser = async ({ profile, skills, login }) => {
   // conditionals for projects tbd
-  const { first_name, last_name, school, bio, project_one, project_two } =
+  const { first_name, last_name, education, bio, project_one, project_two } =
     profile;
   const { email, password } = login;
   try {
     const newUser = await db.one(
-      "INSERT INTO users (first_name, last_name, school, bio, project_one, project_two) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
-      [first_name, last_name, school, bio, project_one, project_two]
+      "INSERT INTO users (first_name, last_name, education, bio, project_one, project_two) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
+      [first_name, last_name, education, bio, project_one, project_two]
     );
     db.one(
       "INSERT INTO logins (email, password, user_id) VALUES ($1, $2, $3) RETURNING *",
@@ -51,12 +51,12 @@ const createUser = async ({ profile, skills, login }) => {
 };
 
 const updateUser = async ({ profile, skills }, userID) => {
-  const { first_name, last_name, school, bio, project_one, project_two } =
+  const { first_name, last_name, education, bio, project_one, project_two } =
     profile;
   try {
     const updatedUser = await db.one(
-      "UPDATE users SET first_name=$1, last_name=$2, school=$3, bio=$4, project_one=$5, project_two=$6 WHERE id=$7 RETURNING *",
-      [first_name, last_name, school, bio, project_one, project_two, userID]
+      "UPDATE users SET first_name=$1, last_name=$2, education=$3, bio=$4, project_one=$5, project_two=$6 WHERE id=$7 RETURNING *",
+      [first_name, last_name, education, bio, project_one, project_two, userID]
     );
     deleteAllUserSkills(userID);
     skills.forEach((e) =>
