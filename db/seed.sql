@@ -3,29 +3,29 @@
 INSERT INTO users (
     first_name,
     last_name,
-    school,
+    education,
     bio,
     project_one,
     project_two
 ) VALUES 
-('Dan', 'Mazzilli', 'Pursuit', 'Interested in sustainability, sports analytics, and resource optimization.', 'link1', 'link2'),
-('Destiny', 'Joyner', 'Pursuit', 'I like coding!', 'link1', 'link2'),
-('Jahaad', 'Petty', 'Pursuit', 'I like potatoes!', 'link1', 'link2');
+('Dan', 'Mazzilli', 'Pursuit', 'Interested in sustainability, sports analytics, and resource optimization.', 'https://github.com/Daniel-Mazzilli/9-1-front-end-portfolio-project', 'https://github.com/Daniel-Mazzilli/budgeting-app-front-end'),
+('Destiny', 'Joyner', 'Pursuit', 'I like coding!', 'https://github.com/DestinyJoyner/Budget-App-React', 'https://destiny-calendar-project.netlify.app/'),
+('Ron', 'Jon', 'Pursuit', 'I like cars!', 'link1', 'link2');
 
 INSERT INTO logins (
     email,
     password,
     user_id
 ) VALUES
-('dm@email.com', 'password', 1),
-('dj@email.com', 'password', 2),
-('jp@email.com', 'password', 3);
+('dm@email.com', '$2b$10$Nc1/F2rXyIysYHea4eQnMOtcXMrHTcV485Hqe/N/BmVylXtj7fozm', 1),
+('dj@email.com', '$2b$10$Nc1/F2rXyIysYHea4eQnMOtcXMrHTcV485Hqe/N/BmVylXtj7fozm', 2),
+('rj@email.com', '$2b$10$Nc1/F2rXyIysYHea4eQnMOtcXMrHTcV485Hqe/N/BmVylXtj7fozm', 3);
 
 INSERT INTO skills (
     skill_name
 ) VALUES
 ('JavaScript'),
-('Express'),
+('NodeJs'),
 ('React'),
 ('Python'),
 ('Java'),
@@ -34,8 +34,7 @@ INSERT INTO skills (
 ('SQL'),
 ('Swift'),
 ('Go'),
-('Rust'),
-('C#'),
+('TypeScript'),
 ('PHP')
 ;
 
@@ -44,11 +43,18 @@ INSERT INTO users_skills (
     skill_id
 ) VALUES 
 (1,3),
-(3,1),
-(2,2),
 (1,2),
-(2,3),
-(3,3);
+(1,8),
+(1,6),
+(2,1),
+(2,9),
+(2,11),
+(2,7),
+(3,10),
+(3,4),
+(3,12),
+(3,5)
+;
 
 INSERT INTO jobs (
     title,
@@ -92,7 +98,7 @@ false,
 'Boulder, CO', 
 'Appinventiv is a software and app development company that offers ROI-focused solutions to its clients through digital transformation. We have gained a reputed name in the space of software and app development in the United States for a wide range of industries.
 Our expertise lies in offering full custom design, development, and post-delivery optimization across domains like FoodTech, FinTech, HealthTech, Media, OTT, Commerce & EdTech.', 
-false,
+true,
 'Guide customers through the installation process for new software or applications. Perform troubleshooting when a user experiences challenges. Recommend new products to users who might benefit from updating their software or hardware.'),
 ('Quality Assurance Tester', 
 'Pell Software', 
@@ -147,7 +153,7 @@ INSERT INTO jobs_skills (
 (6,12),
 (6,3),
 (7,8),
-(7,13),
+(7,3),
 (7,1),
 (8,5),
 (8,9),
@@ -155,7 +161,7 @@ INSERT INTO jobs_skills (
 (8,7),
 (9,11),
 (9,1),
-(9,13),
+(9,2),
 (9,10)
 ;
 
@@ -166,7 +172,9 @@ INSERT INTO users_jobs (
 ) VALUES
 (1, 1, CURRENT_DATE),
 (1, 2, CURRENT_DATE),
+(1, 5, CURRENT_DATE),
+(1, 7, CURRENT_DATE),
+(2, 4, CURRENT_DATE),
 (2, 1, CURRENT_DATE),
 (2, 3, CURRENT_DATE),
-(3, 2, CURRENT_DATE),
-(3, 3, CURRENT_DATE);
+(2, 9, CURRENT_DATE);

@@ -6,15 +6,23 @@ const getAllJobs = async () => {
     //   "SELECT job_id, title, company, city, details, full_remote, skill_name FROM jobs_skills JOIN jobs ON jobs.id = jobs_skills.job_id JOIN skills ON skills.id = jobs_skills.skill_id"
     // );
     const allJobIDs = await db.any(
-      "SELECT job_id, title, company, city, details, full_remote, tasks, skill_name FROM jobs_skills JOIN jobs ON jobs.id = jobs_skills.job_id JOIN skills ON skills.id = jobs_skills.skill_id"
+      "SELECT job_id, title, company, city, details, full_remote, tasks, skill_name, skill_id FROM jobs_skills JOIN jobs ON jobs.id = jobs_skills.job_id JOIN skills ON skills.id = jobs_skills.skill_id"
     );
+    // console.log(allJobIDs)
     const allJobDetails = allJobIDs.reduce((acc, e) => {
       const val = e["job_id"];
       if (acc[val]) {
+      
+        // acc[val] = {
+        //   ...acc[val],
+        //   ["skill_name"]: [...[acc[val]["skill_name"]], e["skill_name"]].flat(),
+        // };
         acc[val] = {
           ...acc[val],
           ["skill_name"]: [...[acc[val]["skill_name"]], e["skill_name"]].flat(),
-        };
+          ["skill_id"]: [...[acc[val]["skill_id"]], e["skill_id"]].flat(),
+        }
+
         return acc;
       } else {
         return (acc = { ...acc, [e["job_id"]]: e });
