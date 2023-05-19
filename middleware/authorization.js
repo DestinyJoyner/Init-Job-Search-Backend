@@ -23,7 +23,7 @@ const hashPass = (req, res, next) => {
 // Refresh Token To Be Added
 const generateWebToken = (email) => {
   return JWT.sign({ email: email }, process.env.SECRET_TOKEN, {
-    expiresIn: "24hr",
+    expiresIn: "30d",
   });
 };
 
