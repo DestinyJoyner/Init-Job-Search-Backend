@@ -109,7 +109,7 @@ module.exports = users;
     {
         "first_name": "Test",
         "last_name": "Mazzilli",
-        "school": "Pursuit",
+        "education": "Pursuit",
         "bio": "Interested in sustainability, sports analytics, and resource optimization.",
         "project_one": "",
         "project_two": ""
