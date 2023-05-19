@@ -162,8 +162,7 @@ INSERT INTO jobs_skills (
 (9,11),
 (9,1),
 (9,2),
-(9,10)
-;
+(9,10);
 
 INSERT INTO users_jobs (
     user_id,
