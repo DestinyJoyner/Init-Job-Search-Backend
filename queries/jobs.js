@@ -2,16 +2,27 @@ const db = require("../db/dbConfig.js");
 
 const getAllJobs = async () => {
   try {
+    // const allJobIDs = await db.any(
+    //   "SELECT job_id, title, company, city, details, full_remote, skill_name FROM jobs_skills JOIN jobs ON jobs.id = jobs_skills.job_id JOIN skills ON skills.id = jobs_skills.skill_id"
+    // );
     const allJobIDs = await db.any(
-      "SELECT job_id, title, company, city, details, full_remote, skill_name FROM jobs_skills JOIN jobs ON jobs.id = jobs_skills.job_id JOIN skills ON skills.id = jobs_skills.skill_id"
+      "SELECT job_id, title, company, city, details, full_remote, tasks, skill_name, skill_id FROM jobs_skills JOIN jobs ON jobs.id = jobs_skills.job_id JOIN skills ON skills.id = jobs_skills.skill_id"
     );
+    // console.log(allJobIDs)
     const allJobDetails = allJobIDs.reduce((acc, e) => {
       const val = e["job_id"];
       if (acc[val]) {
+      
+        // acc[val] = {
+        //   ...acc[val],
+        //   ["skill_name"]: [...[acc[val]["skill_name"]], e["skill_name"]].flat(),
+        // };
         acc[val] = {
           ...acc[val],
           ["skill_name"]: [...[acc[val]["skill_name"]], e["skill_name"]].flat(),
-        };
+          ["skill_id"]: [...[acc[val]["skill_id"]], e["skill_id"]].flat(),
+        }
+
         return acc;
       } else {
         return (acc = { ...acc, [e["job_id"]]: e });
@@ -32,10 +43,10 @@ const getOneJob = async (jobID) => {
     const oneJob = await db.one("SELECT * FROM jobs WHERE id=$1", jobID);
 
     const jobSkills = await db.any(
-      "SELECT skill_name FROM jobs_skills JOIN skills ON skills.id = jobs_skills.skill_id WHERE job_id=$1",
+      "SELECT skill_name, skill_id FROM jobs_skills JOIN skills ON skills.id = jobs_skills.skill_id WHERE job_id=$1",
       jobID
     );
-    oneJob.skills = jobSkills.map(({ skill_name }) => skill_name);
+    oneJob.skills = jobSkills.map(({ skill_name, skill_id }) => { return {[skill_id] : skill_name}});
 
     return oneJob;
   } catch (error) {
@@ -43,11 +54,11 @@ const getOneJob = async (jobID) => {
   }
 };
 
-const createJob = async ({ title, company, city, details, full_remote }) => {
+const createJob = async ({ title, company, city, details, full_remote, tasks }) => {
   try {
     const newJob = await db.one(
-      "INSERT INTO jobs (title, company, city, details, full_remote) VALUES ($1, $2, $3, $4, $5) RETURNING *",
-      [title, company, city, details, full_remote]
+      "INSERT INTO jobs (title, company, city, details, full_remote, tasks) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
+      [title, company, city, details, full_remote, tasks]
     );
     return newJob;
   } catch (error) {
@@ -56,11 +67,11 @@ const createJob = async ({ title, company, city, details, full_remote }) => {
 };
 
 const updateJob = async (job, jobID) => {
-  const { title, company, city, details, full_remote } = job;
+  const { title, company, city, details, full_remote, tasks } = job;
   try {
     const updatedJob = await db.one(
-      "UPDATE jobs SET title=$1, company=$2, city=$3, details=$4, full_remote=$5 WHERE id=$6 RETURNING *",
-      [title, company, city, details, full_remote, jobID]
+      "UPDATE jobs SET title=$1, company=$2, city=$3, details=$4, full_remote=$5, tasks=$6 WHERE id=$7 RETURNING *",
+      [title, company, city, details, full_remote, tasks, jobID]
     );
     return updatedJob;
   } catch (error) {
