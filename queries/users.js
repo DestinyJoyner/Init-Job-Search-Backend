@@ -17,8 +17,14 @@ const getUserByID = async (userID) => {
       "SELECT * FROM users_skills JOIN skills ON skills.id = users_skills.skill_id WHERE user_id=$1",
       userID
     );
-    oneUser.skills["skill_names"] = userSkills.map(({ skill_name }) => skill_name);
-    oneUser.skills["skill_ids"] = userSkills.map(({ skill_id }) => skill_id);
+
+    oneUser.skills = {
+      skill_names: userSkills.map(({ skill_name }) => skill_name),
+      skill_ids: userSkills.map(({ skill_id }) => skill_id),
+    };
+
+    // oneUser.skills["skill_names"] = userSkills.map(({ skill_name }) => skill_name);
+    // oneUser.skills["skill_ids"] = userSkills.map(({ skill_id }) => skill_id);
     return oneUser;
   } catch (error) {
     return error;
