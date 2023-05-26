@@ -37,6 +37,22 @@ CREATE TABLE users_skills (
     skill_id INTEGER REFERENCES skills (id) ON DELETE CASCADE
 );
 
+DROP TABLE IF EXISTS recruiters;
+
+CREATE TABLE recruiters (
+    id SERIAL PRIMARY KEY,
+    first_name VARCHAR(25) NOT NULL,
+    last_name VARCHAR(25) NOT NULL,
+    organization VARCHAR(50) NOT NULL
+);
+
+DROP TABLE IF EXISTS recruiter_logins;
+
+CREATE TABLE recruiter_logins (
+    email  VARCHAR(50) NOT NULL,
+    password TEXT NOT NULL,
+    recruiter_id INTEGER REFERENCES recruiters (id) ON DELETE CASCADE
+);
 
 DROP TABLE IF EXISTS jobs;
 
@@ -47,7 +63,8 @@ CREATE TABLE jobs (
     city VARCHAR(25) NOT NULL,
     details VARCHAR(4000) NOT NULL,
     full_remote BOOL DEFAULT false,
-    tasks VARCHAR(4000) NOT NULL
+    tasks VARCHAR(4000) NOT NULL,
+    recruiter_id INTEGER REFERENCES recruiters (id) ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS users_jobs;
