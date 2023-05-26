@@ -6,7 +6,7 @@ const getAllJobs = async () => {
     //   "SELECT job_id, title, company, city, details, full_remote, skill_name FROM jobs_skills JOIN jobs ON jobs.id = jobs_skills.job_id JOIN skills ON skills.id = jobs_skills.skill_id"
     // );
     const allJobIDs = await db.any(
-      "SELECT job_id, title, company, city, details, full_remote, tasks, skill_name, skill_id FROM jobs_skills JOIN jobs ON jobs.id = jobs_skills.job_id JOIN skills ON skills.id = jobs_skills.skill_id"
+      "SELECT job_id, title, company, city, details, full_remote, tasks, recruiter_id, skill_name, skill_id FROM jobs_skills JOIN jobs ON jobs.id = jobs_skills.job_id JOIN skills ON skills.id = jobs_skills.skill_id"
     );
     // console.log(allJobIDs)
     const allJobDetails = allJobIDs.reduce((acc, e) => {
@@ -54,11 +54,11 @@ const getOneJob = async (jobID) => {
   }
 };
 
-const createJob = async ({ title, company, city, details, full_remote, tasks }) => {
+const createJob = async ({ title, company, city, details, full_remote, tasks, recruiter_id }) => {
   try {
     const newJob = await db.one(
-      "INSERT INTO jobs (title, company, city, details, full_remote, tasks) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
-      [title, company, city, details, full_remote, tasks]
+      "INSERT INTO jobs (title, company, city, details, full_remote, tasks, recruiter_id) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *",
+      [title, company, city, details, full_remote, tasks, recruiter_id]
     );
     return newJob;
   } catch (error) {
@@ -67,11 +67,11 @@ const createJob = async ({ title, company, city, details, full_remote, tasks }) 
 };
 
 const updateJob = async (job, jobID) => {
-  const { title, company, city, details, full_remote, tasks } = job;
+  const { title, company, city, details, full_remote, tasks, recruiter_id } = job;
   try {
     const updatedJob = await db.one(
-      "UPDATE jobs SET title=$1, company=$2, city=$3, details=$4, full_remote=$5, tasks=$6 WHERE id=$7 RETURNING *",
-      [title, company, city, details, full_remote, tasks, jobID]
+      "UPDATE jobs SET title=$1, company=$2, city=$3, details=$4, full_remote=$5, tasks=$6, recruiter_id=$7 WHERE id=$8 RETURNING *",
+      [title, company, city, details, full_remote, tasks, recruiter_id, jobID]
     );
     return updatedJob;
   } catch (error) {
