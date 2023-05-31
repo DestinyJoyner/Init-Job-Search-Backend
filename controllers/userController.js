@@ -59,7 +59,7 @@ users.post(
       res.status(200).json(newUser);
     } else {
       // res.redirect("/not-found");
-      res.json({ error: newUser });
+      res.json({ error: newUser.message });
     }
   }
 );
