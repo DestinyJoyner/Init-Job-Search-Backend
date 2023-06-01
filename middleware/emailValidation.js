@@ -11,4 +11,4 @@ const emailValidation = async (req, res, next) => {
   }
 };
 
-module.exports = { emailValidation };
+module.exports = { emailValidation,};
