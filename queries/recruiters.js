@@ -58,9 +58,9 @@ const getOneRecruiter = async (recruiterID) => {
   }
 };
 
-const createRecruiter = async ({ recruiterLogin, recruiterProfile }) => {
-  const { email, password } = recruiterLogin;
-  const { first_name, last_name, organization } = recruiterProfile;
+const createRecruiter = async ({ login, profile }) => {
+  const { email, password } = login;
+  const { first_name, last_name, organization } = profile;
   try {
     const newRecruiter = await db.one(
       "INSERT INTO recruiters (first_name, last_name, organization) VALUES ($1, $2, $3)RETURNING *",
@@ -77,7 +77,7 @@ const createRecruiter = async ({ recruiterLogin, recruiterProfile }) => {
 };
 
 const updateRecruiter = async (recruiterID, body) => {
-  const { first_name, last_name, organization } = body;
+  const { first_name, last_name, organization } = body.profile;
   try {
     const updatedRecruiter = await db.one(
       "UPDATE recruiters SET first_name=$1, last_name=$2, organization=$3 WHERE id=$4 RETURNING *",

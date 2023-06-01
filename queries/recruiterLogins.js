@@ -1,10 +1,10 @@
 const db = require("../db/dbConfig.js");
 
-// Show
+// Index
 const getAllRecruiterLogins = async () => {
   try {
     const allRecruiterLogins = await db.any(
-      "SELECT * FROM recruiter_logins JOIN recruiters ON recruiter_id = id"
+      "SELECT email, password, recruiter_id, first_name, last_name, organization FROM recruiter_logins JOIN recruiters ON recruiter_id = id"
     );
     return allRecruiterLogins;
   } catch (error) {

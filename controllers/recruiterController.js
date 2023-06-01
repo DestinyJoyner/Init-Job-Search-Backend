@@ -7,6 +7,17 @@ const {
   updateRecruiter,
   deleteRecruiter,
 } = require("../queries/recruiters.js");
+const {
+  caseConversion, recruiterSchema
+} = require("../middleware/schemaValidations/userValidation.js");
+const {
+  passwordSchema,
+} = require("../middleware/schemaValidations/loginValidation.js");
+const {
+  validationError,
+} = require("../middleware/schemaValidations/errorValidation.js");
+const { hashPass } = require("../middleware/authorization.js");
+const { emailValidation } = require("../middleware/emailValidation.js");
 
 // Index
 recruiters.get("/", async (req, res) => {
@@ -32,17 +43,26 @@ recruiters.get("/:id", async (req, res) => {
 });
 
 // Create
-recruiters.post("/", async (req, res) => {
-  const newRecruiter = await createRecruiter(req.body);
-  if (!newRecruiter.message) {
-    res.status(200).json(newRecruiter);
-  } else {
-    res.json({ error: newRecruiter.message });
+recruiters.post(
+  "/",
+  caseConversion,
+  emailValidation,
+  passwordSchema,
+  recruiterSchema,
+  validationError,
+  hashPass,
+  async (req, res) => {
+    const newRecruiter = await createRecruiter(req.body);
+    if (!newRecruiter.message) {
+      res.status(200).json(newRecruiter);
+    } else {
+      res.json({ error: newRecruiter.message });
+    }
   }
-});
+);
 
 // Update
-recruiters.put("/:id", async (req, res) => {
+recruiters.put("/:id", caseConversion, recruiterSchema, validationError, async (req, res) => {
   const { id } = req.params;
   const updatedRecruiter = await updateRecruiter(id, req.body);
   if (!updatedRecruiter.message) {
@@ -67,13 +87,14 @@ module.exports = recruiters;
 
 // shape of post for recruiter
 // {
-//     "recruiterProfile": {
-//          "first_name": "Jane",
-//          "last_name": "Adams",
-//          "organization": "Peloton"
-//     },
-//     "recruiterLogin":    {
-//         "email": "recruiter1@email.com",
-//         "password": "passwordR"
-//     }
-//      }
+//   "profile": {
+//        "first_name": "paUl",
+//        "last_name": "blart",
+//        "organization": "MALL"
+//   },
+//   "login":    {
+//       "email": "bob@email.com",
+//       "password": "1Password!",
+//       "isRecruiter": true
+//   }
+//    }

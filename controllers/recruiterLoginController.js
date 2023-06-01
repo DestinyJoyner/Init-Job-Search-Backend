@@ -14,6 +14,7 @@ const {
 const {
   passwordSchema,
 } = require("../middleware/schemaValidations/loginValidation.js");
+const { caseConversion } = require("../middleware/schemaValidations/userValidation.js");
 
 // Index
 recruiterLogin.get("/", async (req, res) => {
@@ -28,7 +29,7 @@ recruiterLogin.get("/", async (req, res) => {
 });
 
 // Update email
-recruiterLogin.put("/:id/email", emailValidation, async (req, res) => {
+recruiterLogin.put("/:id/email",caseConversion, emailValidation, async (req, res) => {
   const { id } = req.params;
   const updatedRecruiterEmail = await updateRecruiterEmail(id, req.body);
   if (!updatedRecruiterEmail.message) {

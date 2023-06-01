@@ -34,8 +34,8 @@ const generateWebToken = (email) => {
 const userLogin = async (req, res, next) => {
   const { email, password, isRecruiter } = req.body;
   let credentials = isRecruiter
-    ? await getRecruiterLoginByEmail(email)
-    : await getLoginByEmail(email);
+    ? await getRecruiterLoginByEmail(email.toLowerCase())
+    : await getLoginByEmail(email.toLowerCase());
   if (!credentials.message) {
     const isPassValid = await bcrypt.compare(password, credentials.password);
     if (isPassValid) {
