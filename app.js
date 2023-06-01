@@ -10,6 +10,7 @@ const userSkillController = require("./controllers/userSkillController.js");
 const jobSkillController = require("./controllers/jobSkillController.js");
 const userJobController = require("./controllers/userJobController.js");
 const recruiterController = require("./controllers/recruiterController.js");
+const recruiterLoginController = require("./controllers/recruiterLoginController.js")
 
 // CONFIGURE
 const app = express();
@@ -27,6 +28,7 @@ app.use("/user-skills", userSkillController);
 app.use("/job-skills", jobSkillController);
 app.use("/user-jobs", userJobController);
 app.use("/recruiters", recruiterController);
+app.use("/recruiters-logins", recruiterLoginController);
 
 // ROUTES
 app.get("/", (req, res) => {

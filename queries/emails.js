@@ -13,4 +13,16 @@ const checkEmail = async (email) => {
     }
   };
 
-  module.exports = { checkEmail };
+  const checkRecruiterEmail = async (email) => {
+    try {
+      const isUnique = await db.one(
+        "SELECT email FROM recruiter_logins WHERE email=$1",
+        email
+      );
+      return false;
+    } catch (error) {
+      return true;
+    }
+  };
+
+  module.exports = { checkEmail, checkRecruiterEmail };
