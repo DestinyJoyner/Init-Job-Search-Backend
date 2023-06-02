@@ -63,7 +63,7 @@ CREATE TABLE jobs (
     city VARCHAR(25) NOT NULL,
     details VARCHAR(4000) NOT NULL,
     full_remote BOOL DEFAULT false,
-    tasks VARCHAR(4000) NOT NULL,
+    tasks VARCHAR(2800) NOT NULL,
     recruiter_id INTEGER REFERENCES recruiters (id) ON DELETE CASCADE
 );
 
