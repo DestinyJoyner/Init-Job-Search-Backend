@@ -33,7 +33,20 @@ const deleteJobSkill = async ({ job_id, skill_id }) => {
   }
 };
 
+const deleteAllJobSkills = async (jobID) => {
+  try {
+    const deletedAllJobSkills = await db.any(
+      "DELETE FROM jobs_skills WHERE job_id=$1 RETURNING *",
+      jobID
+    );
+    return deleteAllJobSkills;
+  } catch (error) {
+    return error;
+  }
+};
+
 module.exports = {
   createJobSkill,
   deleteJobSkill,
+  deleteAllJobSkills,
 };

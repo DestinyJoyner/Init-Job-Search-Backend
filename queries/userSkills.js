@@ -24,11 +24,11 @@ const createUserSkill = async ({ user_id, skill_id }) => {
 // delete all skils linked to a user
 const deleteAllUserSkills = async (userID) => {
   try {
-    const deletedAllSkills = await db.any(
+    const deletedAllUserSkills = await db.any(
       "DELETE FROM users_skills WHERE user_id=$1 RETURNING *",
       userID
     );
-    return deletedAllSkills;
+    return deletedAllUserSkills;
   } catch (error) {
     return error;
   }
