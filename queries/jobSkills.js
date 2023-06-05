@@ -39,7 +39,7 @@ const deleteAllJobSkills = async (jobID) => {
       "DELETE FROM jobs_skills WHERE job_id=$1 RETURNING *",
       jobID
     );
-    return deleteAllJobSkills;
+    return deletedAllJobSkills;
   } catch (error) {
     return error;
   }
