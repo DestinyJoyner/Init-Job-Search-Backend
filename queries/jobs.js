@@ -1,5 +1,5 @@
 const db = require("../db/dbConfig.js");
-const {createJobSkill, deleteAllJobSkills} = require("./jobSkills.js")
+const { createJobSkill, deleteAllJobSkills } = require("./jobSkills.js");
 const getAllJobs = async () => {
   try {
     // const allJobIDs = await db.any(
@@ -86,13 +86,17 @@ const updateJob = async (job, jobID) => {
       [title, company, city, details, full_remote, tasks, jobID]
     );
     deleteAllJobSkills(jobID);
-    skills.forEach((skillID) => {
-      const obj = {
-        ["job_id"]: jobID,
-        ["skill_id"]: skillID,
-      };
-      createJobSkill(obj);
-    });
+    skills.forEach((e) =>
+      // const obj = {
+      //   ["job_id"]: jobID,
+      //   ["skill_id"]: skillID,
+      // };
+      // createJobSkill(obj);
+      db.one(
+        "INSERT INTO jobs_skills (job_id, skill_id) VALUES ($1, $2) RETURNING *",
+        [jobID, e]
+      )
+    );
     return updatedJob;
   } catch (error) {
     return error;
