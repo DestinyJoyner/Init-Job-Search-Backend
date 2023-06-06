@@ -7,6 +7,8 @@ const {
   updateJob,
   deleteJob,
 } = require("../queries/jobs.js");
+const { taskFormat, atLeastOneSkill, jobSchema } = require("../middleware/schemaValidations/jobValidation.js")
+const {validationError} = require("../middleware/schemaValidations/errorValidation.js")
 
 // INDEX
 jobs.get("/", async (req, res) => {
@@ -31,9 +33,8 @@ jobs.get("/:id", async (req, res) => {
 });
 
 // CREATE
-jobs.post("/", async (req, res) => {
+jobs.post("/", atLeastOneSkill, taskFormat, jobSchema, validationError, async (req, res) => {
   const newJob = await createJob(req.body);
-
   if (!newJob.message) {
     res.status(200).json(newJob);
   } else {
@@ -54,7 +55,7 @@ jobs.delete("/:id", async (req, res) => {
 });
 
 // UPDATE
-jobs.put("/:id", async (req, res) => {
+jobs.put("/:id", atLeastOneSkill, taskFormat, jobSchema, validationError, async (req, res) => {
   const { id } = req.params;
   const updatedJob = await updateJob(req.body, id);
 

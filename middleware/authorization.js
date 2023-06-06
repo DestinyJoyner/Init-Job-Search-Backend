@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt");
 const JWT = require("jsonwebtoken");
 const dotenv = require("dotenv");
 const { getLoginByEmail } = require("../queries/logins.js");
+const { getRecruiterLoginByEmail } = require("../queries/recruiterLogins.js");
 
 dotenv.config();
 
@@ -23,7 +24,7 @@ const hashPass = (req, res, next) => {
 // Refresh Token To Be Added
 const generateWebToken = (email) => {
   return JWT.sign({ email: email }, process.env.SECRET_TOKEN, {
-    expiresIn: '720h',
+    expiresIn: "720h",
   });
 };
 
@@ -31,14 +32,18 @@ const generateWebToken = (email) => {
 // if entered password matches the one in the db then proceed
 
 const userLogin = async (req, res, next) => {
-  const { email, password } = req.body;
-  const credentials = await getLoginByEmail(email);
+  const { email, password, isRecruiter } = req.body;
+  let credentials = isRecruiter
+    ? await getRecruiterLoginByEmail(email.toLowerCase())
+    : await getLoginByEmail(email.toLowerCase());
   if (!credentials.message) {
     const isPassValid = await bcrypt.compare(password, credentials.password);
     if (isPassValid) {
       const token = generateWebToken(email);
       req.body.token = token;
-      req.body["user_id"] = credentials["user_id"]
+      isRecruiter
+        ? (req.body["recruiter_id"] = credentials["recruiter_id"])
+        : (req.body["user_id"] = credentials["user_id"]);
       next();
     } else {
       res.status(400).json({ error: "Invalid password" });
@@ -66,5 +71,5 @@ const verifyToken = (req, res, next) => {
 module.exports = {
   hashPass,
   userLogin,
-  verifyToken
+  verifyToken,
 };

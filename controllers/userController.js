@@ -19,6 +19,7 @@ const {
 const {
   validationError,
 } = require("../middleware/schemaValidations/errorValidation.js");
+const { atLeastOneSkill } = require("../middleware/schemaValidations/jobValidation.js")
 
 // Index
 users.get("/", async (req, res) => {
@@ -47,6 +48,7 @@ users.get("/:id", verifyToken, async (req, res) => {
 // Create
 users.post(
   "/",
+  atLeastOneSkill,
   caseConversion,
   emailValidation,
   loginSchema,
@@ -59,7 +61,7 @@ users.post(
       res.status(200).json(newUser);
     } else {
       // res.redirect("/not-found");
-      res.json({ error: newUser });
+      res.json({ error: newUser.message });
     }
   }
 );
@@ -67,6 +69,7 @@ users.post(
 // Update
 users.put(
   "/:id",
+  atLeastOneSkill,
   caseConversion,
   userSchema,
   validationError,

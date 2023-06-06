@@ -6,6 +6,11 @@ const loginSchema = [
     body("login.password").exists({checkFalsy: true}).isStrongPassword({minLength: 5,  minLowercase: 1, minUppercase: 1, minSymbols: 1, minNumbers: 1 }),
 ]
 
+const passwordSchema = [
+    body("login.password").exists({checkFalsy: true}).isStrongPassword({minLength: 5,  minLowercase: 1, minUppercase: 1, minSymbols: 1, minNumbers: 1 }),
+]
+
 module.exports ={
     loginSchema,
+    passwordSchema,
 }

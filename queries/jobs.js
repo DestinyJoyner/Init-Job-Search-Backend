@@ -1,18 +1,17 @@
 const db = require("../db/dbConfig.js");
-
+const { createJobSkill, deleteAllJobSkills } = require("./jobSkills.js");
 const getAllJobs = async () => {
   try {
     // const allJobIDs = await db.any(
     //   "SELECT job_id, title, company, city, details, full_remote, skill_name FROM jobs_skills JOIN jobs ON jobs.id = jobs_skills.job_id JOIN skills ON skills.id = jobs_skills.skill_id"
     // );
     const allJobIDs = await db.any(
-      "SELECT job_id, title, company, city, details, full_remote, tasks, skill_name, skill_id FROM jobs_skills JOIN jobs ON jobs.id = jobs_skills.job_id JOIN skills ON skills.id = jobs_skills.skill_id"
+      "SELECT job_id, title, company, city, details, full_remote, tasks, recruiter_id, skill_name, skill_id FROM jobs_skills JOIN jobs ON jobs.id = jobs_skills.job_id JOIN skills ON skills.id = jobs_skills.skill_id"
     );
     // console.log(allJobIDs)
     const allJobDetails = allJobIDs.reduce((acc, e) => {
       const val = e["job_id"];
       if (acc[val]) {
-      
         // acc[val] = {
         //   ...acc[val],
         //   ["skill_name"]: [...[acc[val]["skill_name"]], e["skill_name"]].flat(),
@@ -21,7 +20,7 @@ const getAllJobs = async () => {
           ...acc[val],
           ["skill_name"]: [...[acc[val]["skill_name"]], e["skill_name"]].flat(),
           ["skill_id"]: [...[acc[val]["skill_id"]], e["skill_id"]].flat(),
-        }
+        };
 
         return acc;
       } else {
@@ -46,7 +45,9 @@ const getOneJob = async (jobID) => {
       "SELECT skill_name, skill_id FROM jobs_skills JOIN skills ON skills.id = jobs_skills.skill_id WHERE job_id=$1",
       jobID
     );
-    oneJob.skills = jobSkills.map(({ skill_name, skill_id }) => { return {[skill_id] : skill_name}});
+    oneJob.skills = jobSkills.map(({ skill_name, skill_id }) => {
+      return { [skill_id]: skill_name };
+    });
 
     return oneJob;
   } catch (error) {
@@ -54,12 +55,22 @@ const getOneJob = async (jobID) => {
   }
 };
 
-const createJob = async ({ title, company, city, details, full_remote, tasks }) => {
+const createJob = async ({ jobDetails, skills }) => {
   try {
+    const { title, company, city, details, full_remote, tasks, recruiter_id } =
+      jobDetails;
     const newJob = await db.one(
-      "INSERT INTO jobs (title, company, city, details, full_remote, tasks) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
-      [title, company, city, details, full_remote, tasks]
+      "INSERT INTO jobs (title, company, city, details, full_remote, tasks, recruiter_id) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *",
+      [title, company, city, details, full_remote, tasks, recruiter_id]
     );
+
+    skills.forEach((skillID) => {
+      const obj = {
+        ["job_id"]: newJob.id,
+        ["skill_id"]: skillID,
+      };
+      createJobSkill(obj);
+    });
     return newJob;
   } catch (error) {
     return error;
@@ -67,11 +78,24 @@ const createJob = async ({ title, company, city, details, full_remote, tasks }) 
 };
 
 const updateJob = async (job, jobID) => {
-  const { title, company, city, details, full_remote, tasks } = job;
+  const { title, company, city, details, full_remote, tasks } = job.jobDetails;
+  const { skills } = job;
   try {
     const updatedJob = await db.one(
       "UPDATE jobs SET title=$1, company=$2, city=$3, details=$4, full_remote=$5, tasks=$6 WHERE id=$7 RETURNING *",
       [title, company, city, details, full_remote, tasks, jobID]
+    );
+    deleteAllJobSkills(jobID);
+    skills.forEach((e) =>
+      // const obj = {
+      //   ["job_id"]: jobID,
+      //   ["skill_id"]: skillID,
+      // };
+      // createJobSkill(obj);
+      db.one(
+        "INSERT INTO jobs_skills (job_id, skill_id) VALUES ($1, $2) RETURNING *",
+        [jobID, e]
+      )
     );
     return updatedJob;
   } catch (error) {

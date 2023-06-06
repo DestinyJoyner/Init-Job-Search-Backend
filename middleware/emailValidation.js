@@ -1,9 +1,10 @@
-const { checkEmail } = require("../queries/emails.js");
+const { checkEmail, checkRecruiterEmail } = require("../queries/emails.js");
 
 const emailValidation = async (req, res, next) => {
-  const { email } = req.body.login;
+  const { email, isRecruiter } = req.body.login;
   // console.log(email)
-  const isEmailUnique = await checkEmail(email);
+
+  const isEmailUnique = isRecruiter? await checkRecruiterEmail(email) :await checkEmail(email);
   if (isEmailUnique) {
     next();
   } else {
@@ -11,4 +12,4 @@ const emailValidation = async (req, res, next) => {
   }
 };
 
-module.exports = { emailValidation };
+module.exports = { emailValidation,};
