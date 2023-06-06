@@ -19,7 +19,7 @@ const {
 const {
   validationError,
 } = require("../middleware/schemaValidations/errorValidation.js");
-const { atLeastOneSkill } = require("../middleware/schemaValidations/jobValidation.js")
+const { skillCheck } = require("../middleware/schemaValidations/jobValidation.js")
 
 // Index
 users.get("/", async (req, res) => {
@@ -48,7 +48,7 @@ users.get("/:id", verifyToken, async (req, res) => {
 // Create
 users.post(
   "/",
-  atLeastOneSkill,
+  skillCheck,
   caseConversion,
   emailValidation,
   loginSchema,
@@ -69,7 +69,7 @@ users.post(
 // Update
 users.put(
   "/:id",
-  atLeastOneSkill,
+  skillCheck,
   caseConversion,
   userSchema,
   validationError,

@@ -8,7 +8,7 @@ const taskFormat = (req, res, next) => {
   next();
 };
 
-const atLeastOneSkill = (req, res, next) => {
+const skillCheck = (req, res, next) => {
   const { skills, profile } = req.body;
   if (
     (!profile && skills.length > 0 && skills.length < 5) ||
@@ -36,4 +36,4 @@ const jobSchema = [
   body("jobDetails.tasks").exists({ checkFalsy: true }).isLength({ max: 2800 }),
   body("jobDetails.recruiter_id").exists({ checkFalsy: true }),
 ];
-module.exports = { taskFormat, atLeastOneSkill, jobSchema };
+module.exports = { taskFormat, skillCheck, jobSchema };
