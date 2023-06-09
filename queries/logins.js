@@ -12,6 +12,19 @@ const getAllLogins = async () => {
   }
 };
 
+// Login Email
+const getLoginEmail = async (userID) => {
+  try {
+    const loginEmail = await db.one(
+      "SELECT email FROM logins WHERE user_id=$1",
+      userID
+    );
+    return loginEmail;
+  } catch (error) {
+    return error;
+  }
+};
+
 // Update credentials
 const updateEmail = async (userID, body) => {
   const { email } = body.login;
@@ -53,4 +66,4 @@ const getLoginByEmail = async (email) => {
   }
 };
 
-module.exports = { getAllLogins, getLoginByEmail, updateEmail, updatePassword };
+module.exports = { getAllLogins, getLoginEmail, getLoginByEmail, updateEmail, updatePassword };

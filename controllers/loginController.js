@@ -2,6 +2,7 @@ const express = require("express");
 const logins = express.Router();
 const {
   getAllLogins,
+  getLoginEmail,
   updateEmail,
   updatePassword,
 } = require("../queries/logins.js");
@@ -14,7 +15,9 @@ const {
 const {
   passwordSchema,
 } = require("../middleware/schemaValidations/loginValidation.js");
-const { caseConversion } = require("../middleware/schemaValidations/userValidation.js");
+const {
+  caseConversion,
+} = require("../middleware/schemaValidations/userValidation.js");
 
 // Index
 logins.get("/", async (req, res) => {
@@ -25,6 +28,17 @@ logins.get("/", async (req, res) => {
     res.status(500).json({
       error: "Server error",
     });
+  }
+});
+
+// Retrieve Login Email
+logins.get("/:id", async (req, res) => {
+  const { id } = req.params;
+  const loginEmail = await getLoginEmail(id);
+  if (!loginEmail.message) {
+    res.status(200).json(loginEmail);
+  } else {
+    res.status(500).json({ error: loginEmail.message });
   }
 });
 
