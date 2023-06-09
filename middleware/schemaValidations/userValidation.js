@@ -21,7 +21,7 @@ const caseConversion = (req, res, next) => {
 };
 
 const userSchema = [
-  body("profile.bio").exists({ checkFalsy: true }).isLength({ max: 255 }),
+  // body("profile.bio").exists({ checkFalsy: true }).isLength({ max: 255 }),
   body("profile.education").exists({ checkFalsy: true }).isLength({ max: 50 }),
   body("profile.project_one").isURL().optional({ checkFalsy: true }),
   body("profile.project_two").isURL().optional({ checkFalsy: true }),
