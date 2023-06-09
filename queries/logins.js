@@ -1,6 +1,6 @@
 const db = require("../db/dbConfig.js");
 
-// Show
+// Index
 const getAllLogins = async () => {
   try {
     const allLogins = await db.any(
