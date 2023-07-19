@@ -8,10 +8,20 @@ const {
   deleteJob,
 } = require("../queries/jobs.js");
 const { taskFormat, skillCheck, jobSchema } = require("../middleware/schemaValidations/jobValidation.js")
+const {jobQuerySchema} = require("../middleware/jobsStartLimitQueryFunctions.js")
 const {validationError} = require("../middleware/schemaValidations/errorValidation.js")
 
 // INDEX
-jobs.get("/", async (req, res) => {
+// implement queries for limit each call (pagination)
+jobs.get("/", jobQuerySchema, validationError, async (req, res) => {
+  //  query set up???
+  // limit always (<num>) , start based on page
+  const { start, limit } = req.query
+
+
+
+
+
   const allJobs = await getAllJobs();
   if (allJobs.length) {
     res.status(200).json(allJobs);

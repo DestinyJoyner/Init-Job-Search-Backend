@@ -1,5 +1,7 @@
 const db = require("../db/dbConfig.js");
 const { createJobSkill, deleteAllJobSkills } = require("./jobSkills.js");
+
+// variables for offset/ limit in postgresql commands for pagination
 const getAllJobs = async () => {
   try {
     // const allJobIDs = await db.any(
