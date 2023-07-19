@@ -19,10 +19,7 @@ jobs.get("/", jobQuerySchema, validationError, async (req, res) => {
   const { start, limit } = req.query
 
 
-
-
-
-  const allJobs = await getAllJobs();
+  const allJobs = await getAllJobs(start, limit);
   if (allJobs.length) {
     res.status(200).json(allJobs);
   } else {
