@@ -8,10 +8,30 @@ const getAllJobs = async (startValue , limitValue ) => {
 
     // test query
     // group by
-    const allJobIDs = await db.any(
-      "DROP TABLE IF EXISTS jobQuery; CREATE TABLE jobQuery AS ( SELECT DISTINCT id FROM jobs LIMIT $2 OFFSET $1); SELECT * FROM jobQuery", [startValue, limitValue] ,
+    const allJobsWithQueryValues = await db.any(
+      "DROP TABLE IF EXISTS jobQuery; CREATE TABLE jobQuery AS ( SELECT id, title, company, city, details, full_remote FROM jobs LIMIT $2 OFFSET $1); SELECT jobQuery.id, title, company, city, details, full_remote, skill_name, skill_id FROM jobs_skills JOIN jobQuery ON jobQuery.id = jobs_skills.job_id JOIN skills ON skills.id = jobs_skills.skill_id", [startValue, limitValue] ,
     );
-    return allJobIDs
+
+    const reduceJobKeyValues = allJobsWithQueryValues.reduce((acc, e) => {
+      const val = e["id"];
+      if (acc[val]) {
+        acc[val] = {
+          ...acc[val],
+          ["skill_name"]: [...[acc[val]["skill_name"]], e["skill_name"]].flat(),
+          ["skill_id"]: [...[acc[val]["skill_id"]], e["skill_id"]].flat(),
+        };
+
+        return acc;
+      } else {
+        return (acc = { ...acc, [e["id"]]: e });
+      }
+    }, {});
+    const distinctJobWithDetailsArr = [];
+    for (let i in reduceJobKeyValues) {
+      distinctJobWithDetailsArr.push(reduceJobKeyValues[i]);
+    }
+    return distinctJobWithDetailsArr
+    // return allJobsWithQueryValues
 
       // SELECT job_id, title, company, city, details, full_remote, skill_name FROM jobs_skills JOIN jobs ON jobs.id = jobs_skills.job_id JOIN skills ON skills.id = jobs_skills.skill_id)"
 
