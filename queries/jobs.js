@@ -1,78 +1,111 @@
 const db = require("../db/dbConfig.js");
 const { createJobSkill, deleteAllJobSkills } = require("./jobSkills.js");
 
+const getAllJobs = async (limitValue, startValue) => {
+  const allJobs = await db.any(
+    `
+    SELECT * 
+    FROM jobs 
+    ORDER BY id 
+    LIMIT $1  
+    OFFSET $2
+     `, [limitValue, startValue] 
+  );
+
+  return allJobs;
+}
+
+const getSkillsForJobByJobId = async (jobId) => {
+  const allSkills = await db.any(
+    `
+    SELECT id FROM jobs_skills 
+    JOIN skills
+    ON jobs_skills.skill_id = skills.id
+    WHERE jobs_skills.job_id = $1
+   `, [jobId])
+
+  return allSkills;
+}
+
+
 // variables for offset/ limit in postgresql commands for pagination
-const getAllJobs = async (startValue , limitValue ) => {
-  console.log(limitValue)
-  try {
+// const getAllJobs = async (startValue , limitValue ) => {
+  
+//   try {
 
-    // test query
-    // group by
-    const allJobsWithQueryValues = await db.any(
-      "DROP TABLE IF EXISTS jobQuery; CREATE TABLE jobQuery AS ( SELECT id, title, company, city, details, full_remote FROM jobs LIMIT $2 OFFSET $1); SELECT jobQuery.id, title, company, city, details, full_remote, skill_name, skill_id FROM jobs_skills JOIN jobQuery ON jobQuery.id = jobs_skills.job_id JOIN skills ON skills.id = jobs_skills.skill_id", [startValue, limitValue] ,
-    );
+//     // test query
+//     // group by
+//     const allJobsWithQueryValues = await db.any(
+//       "DROP TABLE IF EXISTS jobQuery; CREATE TABLE jobQuery AS ( SELECT id, title, company, city, details, full_remote FROM jobs LIMIT $2 OFFSET $1); SELECT jobQuery.id, title, company, city, details, full_remote, skill_name, skill_id FROM jobs_skills JOIN jobQuery ON jobQuery.id = jobs_skills.job_id JOIN skills ON skills.id = jobs_skills.skill_id", [startValue, limitValue] ,
+//     );
 
-    const reduceJobKeyValues = allJobsWithQueryValues.reduce((acc, e) => {
-      const val = e["id"];
-      if (acc[val]) {
-        acc[val] = {
-          ...acc[val],
-          ["skill_name"]: [...[acc[val]["skill_name"]], e["skill_name"]].flat(),
-          ["skill_id"]: [...[acc[val]["skill_id"]], e["skill_id"]].flat(),
-        };
+//     const allJobs = await db.any(
+//     "SELECT id, title, city FROM jobs LIMIT 4 OFFSET 0", [startValue, limitValue] 
+//     );
 
-        return acc;
-      } else {
-        return (acc = { ...acc, [e["id"]]: e });
-      }
-    }, {});
-    const distinctJobWithDetailsArr = [];
-    for (let i in reduceJobKeyValues) {
-      distinctJobWithDetailsArr.push(reduceJobKeyValues[i]);
-    }
-    return distinctJobWithDetailsArr
-    // return allJobsWithQueryValues
+//     const getSkillsForJobByJobId = await db.any(jobId)
 
-      // SELECT job_id, title, company, city, details, full_remote, skill_name FROM jobs_skills JOIN jobs ON jobs.id = jobs_skills.job_id JOIN skills ON skills.id = jobs_skills.skill_id)"
+//     const reduceJobKeyValues = allJobsWithQueryValues.reduce((acc, e) => {
+//       const val = e["id"];
+//       if (acc[val]) {
+//         acc[val] = {
+//           ...acc[val],
+//           ["skill_name"]: [...[acc[val]["skill_name"]], e["skill_name"]].flat(),
+//           ["skill_id"]: [...[acc[val]["skill_id"]], e["skill_id"]].flat(),
+//         };
 
+//         return acc;
+//       } else {
+//         return (acc = { ...acc, [e["id"]]: e });
+//       }
+//     }, {});
+//     const distinctJobWithDetailsArr = [];
+//     for (let i in reduceJobKeyValues) {
+//       distinctJobWithDetailsArr.push(reduceJobKeyValues[i]);
+//     }
+//     return distinctJobWithDetailsArr
+//     // return allJobsWithQueryValues
 
-
-    // const allJobIDs = await db.any(
-    //   "SELECT job_id, title, company, city, details, full_remote, skill_name FROM jobs_skills JOIN jobs ON jobs.id = jobs_skills.job_id JOIN skills ON skills.id = jobs_skills.skill_id"
-    // );
-    // const allJobIDs = await db.any(
-    //   "SELECT job_id, title, company, city, details, full_remote, tasks, recruiter_id, skill_name, skill_id FROM jobs_skills JOIN jobs ON jobs.id = jobs_skills.job_id JOIN skills ON skills.id = jobs_skills.skill_id"
-    // );
+//       // SELECT job_id, title, company, city, details, full_remote, skill_name FROM jobs_skills JOIN jobs ON jobs.id = jobs_skills.job_id JOIN skills ON skills.id = jobs_skills.skill_id)"
 
 
-    // console.log(allJobIDs)
-    const allJobDetails = allJobIDs.reduce((acc, e) => {
-      const val = e["job_id"];
-      if (acc[val]) {
-        // acc[val] = {
-        //   ...acc[val],
-        //   ["skill_name"]: [...[acc[val]["skill_name"]], e["skill_name"]].flat(),
-        // };
-        acc[val] = {
-          ...acc[val],
-          ["skill_name"]: [...[acc[val]["skill_name"]], e["skill_name"]].flat(),
-          ["skill_id"]: [...[acc[val]["skill_id"]], e["skill_id"]].flat(),
-        };
 
-        return acc;
-      } else {
-        return (acc = { ...acc, [e["job_id"]]: e });
-      }
-    }, {});
-    const arr = [];
-    for (let i in allJobDetails) {
-      arr.push(allJobDetails[i]);
-    }
-    return arr;
-  } catch (error) {
-    return error;
-  }
-};
+//     // const allJobIDs = await db.any(
+//     //   "SELECT job_id, title, company, city, details, full_remote, skill_name FROM jobs_skills JOIN jobs ON jobs.id = jobs_skills.job_id JOIN skills ON skills.id = jobs_skills.skill_id"
+//     // );
+//     // const allJobIDs = await db.any(
+//     //   "SELECT job_id, title, company, city, details, full_remote, tasks, recruiter_id, skill_name, skill_id FROM jobs_skills JOIN jobs ON jobs.id = jobs_skills.job_id JOIN skills ON skills.id = jobs_skills.skill_id"
+//     // );
+
+
+//     // console.log(allJobIDs)
+//     const allJobDetails = allJobIDs.reduce((acc, e) => {
+//       const val = e["job_id"];
+//       if (acc[val]) {
+//         // acc[val] = {
+//         //   ...acc[val],
+//         //   ["skill_name"]: [...[acc[val]["skill_name"]], e["skill_name"]].flat(),
+//         // };
+//         acc[val] = {
+//           ...acc[val],
+//           ["skill_name"]: [...[acc[val]["skill_name"]], e["skill_name"]].flat(),
+//           ["skill_id"]: [...[acc[val]["skill_id"]], e["skill_id"]].flat(),
+//         };
+
+//         return acc;
+//       } else {
+//         return (acc = { ...acc, [e["job_id"]]: e });
+//       }
+//     }, {});
+//     const arr = [];
+//     for (let i in allJobDetails) {
+//       arr.push(allJobDetails[i]);
+//     }
+//     return arr;
+//   } catch (error) {
+//     return error;
+//   }
+// };
 
 const getOneJob = async (jobID) => {
   try {
@@ -158,4 +191,5 @@ module.exports = {
   createJob,
   updateJob,
   deleteJob,
+  getSkillsForJobByJobId
 };
