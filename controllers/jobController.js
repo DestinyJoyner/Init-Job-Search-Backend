@@ -11,16 +11,15 @@ const {
 const { taskFormat, skillCheck, jobSchema } = require("../middleware/schemaValidations/jobValidation.js")
 const {jobQuerySchema} = require("../middleware/jobsStartLimitQueryFunctions.js")
 const {validationError} = require("../middleware/schemaValidations/errorValidation.js");
-const { getSkillByID } = require("../queries/skills.js");
 
 // INDEX
-// implement queries for limit each call (pagination)
 jobs.get("/", jobQuerySchema, validationError, async (req, res) => {
-  //  query set up???
-  // limit always (<num>) , start based on page
-  const { start, limit } = req.query
 
-  const allJobs = await getAllJobs(limit, start);
+  const { start, limit, input, city, remote } = req.query
+  
+  const isRemote = remote !== undefined && remote.toLowerCase() === true 
+
+  const allJobs = await getAllJobs(limit, start, input, city, isRemote);
 
   const allJobsWithSkills = await Promise.all(
     allJobs.map(async job => {
@@ -31,17 +30,16 @@ jobs.get("/", jobQuerySchema, validationError, async (req, res) => {
       })
 
       job.skill_id = skillIds;
-      
+
       return job;
     })
   )
 
  
   if (allJobsWithSkills.length > 0) {
-    console.log(allJobsWithSkills.length)
     res.status(200).json(allJobsWithSkills);
   } else {
-    res.status(500).json({ Error: "empty object" });
+    res.status(500).json({ Error: allJobsWithSkills.message });
   }
 });
 
