@@ -16,11 +16,21 @@ const {validationError} = require("../middleware/schemaValidations/errorValidati
 jobs.get("/", jobQuerySchema, validationError, async (req, res) => {
 
   const { start, limit, input, city, remote } = req.query
+
+ let isRemote = undefined
+ if(remote !== undefined){
+  if(remote.toLowerCase() === "true"){
+    isRemote = true
+  }
+  if(remote.toLowerCase() === "false"){
+    isRemote = false
+  }
+ }
   
-  const isRemote = remote !== undefined && remote.toLowerCase() === true 
+  // const isRemote = remote !== undefined ? remote.toLowerCase() === true : null
 
   const allJobs = await getAllJobs(limit, start, input, city, isRemote);
-
+console.log(allJobs)
   const allJobsWithSkills = await Promise.all(
     allJobs.map(async job => {
       let skills = await(getSkillsForJobByJobId(job.id));

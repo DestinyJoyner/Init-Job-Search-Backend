@@ -9,17 +9,18 @@ const getAllJobs = async (limitValue, startValue, input, city, remote) => {
     to_tsvector(company)  
     ) @@ to_tsquery($3)` : null
 
+
     const cityQuery = city ? `
     to_tsvector(city) @@ to_tsquery($4)` : null
 
-    const remoteQuery = remote !== null ? `
+    const remoteQuery = remote !== undefined ? `
     full_remote IS $5` : null
 
   const whereKeyword = inputQuery || cityQuery || remoteQuery ? `WHERE (
     ${inputQuery ? inputQuery : ""}
-    ${inputQuery ? "AND" : ""} 
+    ${inputQuery && (cityQuery || remoteQuery) ? "AND" : ""} 
     ${cityQuery ? cityQuery : ""}
-    ${cityQuery || inputQuery ? "AND" : ""}
+    ${remoteQuery && (cityQuery || inputQuery) ? "AND" : ""}
     ${remoteQuery ? remoteQuery : ""}
   )` : ""
 
@@ -31,6 +32,8 @@ const getAllJobs = async (limitValue, startValue, input, city, remote) => {
   LIMIT $1  
   OFFSET $2
   `
+
+  console.log(remote, remoteQuery)
 
   const allJobs = await db.any(
     `
