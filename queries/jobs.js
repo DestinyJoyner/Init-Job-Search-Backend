@@ -33,8 +33,6 @@ const getAllJobs = async (limitValue, startValue, input, city, remote) => {
   OFFSET $2
   `
 
-  console.log(remote, remoteQuery)
-
   const allJobs = await db.any(
     `
     ${dbCommand}
