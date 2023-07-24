@@ -3,22 +3,22 @@ const { createJobSkill, deleteAllJobSkills } = require("./jobSkills.js");
 
 const getAllJobs = async (limitValue, startValue, input, city, remote) => {
   const inputQuery = input ? `  (
-    to_tsvector(title)  ||
-    to_tsvector(city)  ||
-    to_tsvector(details)  ||
-    to_tsvector(company)  
+    to_tsvector(LOWER(regexp_replace(title, '\s', '', 'g')))  ||
+    to_tsvector(LOWER(regexp_replace(city, '\s', '', 'g')))  ||
+    to_tsvector(LOWER(regexp_replace(details, '\s', '', 'g')))  ||
+    to_tsvector(LOWER(regexp_replace(company, '\s', '', 'g')))  
     ) @@ to_tsquery($3)` : null
 
 
     const cityQuery = city ? `
-    to_tsvector(city) @@ to_tsquery($4)` : null
+    to_tsvector(LOWER(regexp_replace(city, '\s', '', 'g'))) @@ to_tsquery($4)` : null
 
     const remoteQuery = remote !== undefined ? `
     full_remote IS $5` : null
 
   const whereKeyword = inputQuery || cityQuery || remoteQuery ? `WHERE (
     ${inputQuery ? inputQuery : ""}
-    ${inputQuery && (cityQuery || remoteQuery) ? "AND" : ""} 
+    ${inputQuery && cityQuery ? "AND" : ""} 
     ${cityQuery ? cityQuery : ""}
     ${remoteQuery && (cityQuery || inputQuery) ? "AND" : ""}
     ${remoteQuery ? remoteQuery : ""}
@@ -32,7 +32,7 @@ const getAllJobs = async (limitValue, startValue, input, city, remote) => {
   LIMIT $1  
   OFFSET $2
   `
-
+console.log(dbCommand)
   const allJobs = await db.any(
     `
     ${dbCommand}
