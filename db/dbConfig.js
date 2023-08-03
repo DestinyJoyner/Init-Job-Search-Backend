@@ -6,7 +6,8 @@ const {
     PG_PORT,
     PG_DATABASE,
     PG_USER,
-    PG_PASSWORD
+    PG_PASSWORD,
+    CONNECTION_STRING
 } = process.env
 
 const cn = {

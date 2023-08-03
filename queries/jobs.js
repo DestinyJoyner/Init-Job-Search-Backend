@@ -10,8 +10,10 @@ const getAllJobs = async (limitValue, startValue, input, city, remote) => {
     ) @@ to_tsquery($3)` : null
 
 
-    const cityQuery = city ? `
-    to_tsvector(LOWER(regexp_replace(city, '\s', '', 'g'))) @@ to_tsquery($4)` : null
+    const cityQuery = city ?
+    `LOWER(regexp_replace(city, '\s', '', 'g')) LIKE $4` : null
+    // const cityQuery = city ? `
+    // to_tsvector(LOWER(regexp_replace(city, '\s', '', 'g'))) @@ to_tsquery($4)` : null
 
     const remoteQuery = remote !== undefined ? `
     full_remote IS $5` : null
@@ -36,7 +38,7 @@ console.log(dbCommand)
   const allJobs = await db.any(
     `
     ${dbCommand}
-     `, [limitValue, startValue, input, city, remote] 
+     `, [limitValue, startValue, input, `%${city}%`, remote] 
   );
 
   // const allJobs = await db.any(
