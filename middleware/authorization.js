@@ -61,6 +61,7 @@ const verifyToken = (req, res, next) => {
     return res.status(403).send("A token is required for authentication");
   }
   try {
+    console.log(token)
     req.decoded = JWT.verify(token, process.env.SECRET_TOKEN);
   } catch (error) {
     return res.status(401).send("Invalid Token");

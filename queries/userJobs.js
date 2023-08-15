@@ -5,7 +5,7 @@ const getAllUserJobs = async (userID) => {
   // getting all jobs linked to userID and joining jobs table with users_jobs for job details
   try {
     const allUserJobs = await db.any(
-      "SELECT id, title, company, date_applied FROM users_jobs JOIN jobs ON jobs.id = users_jobs.job_id WHERE user_id=$1",
+      "SELECT id, title, company, date_applied FROM users_jobs JOIN jobs ON jobs.id = users_jobs.job_id WHERE user_id=$1 ORDER BY date_applied DESC",
       userID
     );
 
