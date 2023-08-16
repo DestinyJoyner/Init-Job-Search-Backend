@@ -18,6 +18,6 @@ const cn = {
     password: PG_PASSWORD
 }
 
-const db = pgp(CONNECTION_STRING)
+const db = pgp(cn)
 
 module.exports = db

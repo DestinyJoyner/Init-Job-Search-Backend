@@ -1,3 +1,4 @@
+const { all } = require("../controllers/userController.js");
 const db = require("../db/dbConfig.js");
 const { alreadyExists } = require("./queryValidations.js");
 
@@ -14,6 +15,15 @@ const getAllUserJobs = async (userID) => {
     return error;
   }
 };
+
+const getOneUserJob = async (userId, jobId) => {
+  try {
+    const oneUserJob = await db.one("SELECT date_applied FROM users_jobs where user_id=$1 and job_id=$2", [userId, jobId])
+    return oneUserJob
+  } catch (error) {
+    return error
+  }
+}
 
 const createUserJob = async ({ user_id, job_id }) => {
   const exist = await alreadyExists(
@@ -51,4 +61,5 @@ module.exports = {
   getAllUserJobs,
   createUserJob,
   deleteUserJob,
+  getOneUserJob,
 };

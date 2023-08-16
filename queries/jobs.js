@@ -34,7 +34,6 @@ const getAllJobs = async (limitValue, startValue, input, city, remote) => {
   LIMIT $1  
   OFFSET $2
   `
-console.log(dbCommand)
   const allJobs = await db.any(
     `
     ${dbCommand}
