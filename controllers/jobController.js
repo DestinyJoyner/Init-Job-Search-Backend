@@ -26,8 +26,6 @@ jobs.get("/", jobQuerySchema, validationError, async (req, res) => {
     isRemote = false
   }
  }
-  
-  // const isRemote = remote !== undefined ? remote.toLowerCase() === true : null
 
   const allJobs = await getAllJobs(limit, start, input, city, isRemote);
 
@@ -46,9 +44,10 @@ jobs.get("/", jobQuerySchema, validationError, async (req, res) => {
   )
 
  
-  if (allJobsWithSkills.length > 0) {
+  if (allJobsWithSkills.length >= 0) {
     res.status(200).json(allJobsWithSkills);
-  } else {
+  }
+    else {
     res.status(500).json({ Error: allJobsWithSkills.message });
   }
 });

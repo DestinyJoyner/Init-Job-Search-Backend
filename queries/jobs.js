@@ -36,7 +36,8 @@ const getAllJobs = async (limitValue, startValue, input, city, remote) => {
     ${dbCommand}
      `, [limitValue, startValue, input, `%${city}%`, remote] 
   );
-console.log(dbCommand)
+// console.log(dbCommand)
+console.log(allJobs)
 
   return allJobs;
 }
