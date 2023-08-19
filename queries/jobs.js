@@ -2,26 +2,35 @@ const db = require("../db/dbConfig.js");
 const { createJobSkill, deleteAllJobSkills } = require("./jobSkills.js");
 
 const getAllJobs = async (limitValue, startValue, input, city, remote) => {
-  const inputQuery = input ? `  (
+  const inputQuery = input
+    ? `  (
     to_tsvector(LOWER(regexp_replace(title, 's', '', 'g')))  ||
     to_tsvector(LOWER(regexp_replace(city, 's', '', 'g')))  ||
     to_tsvector(LOWER(regexp_replace(details, 's', '', 'g')))  ||
     to_tsvector(LOWER(regexp_replace(company, 's', '', 'g')))  
-    ) @@ to_tsquery($3)` : null
+    ) @@ to_tsquery($3)`
+    : null;
 
-    const cityQuery = city ?
-    `LOWER(regexp_replace(city, ' ', '', 'g')) LIKE $4` : null
+  const cityQuery = city
+    ? `LOWER(regexp_replace(city, ' ', '', 'g')) LIKE $4`
+    : null;
 
-    const remoteQuery = remote !== undefined ? `
-    full_remote IS $5` : null
+  const remoteQuery =
+    remote !== undefined
+      ? `
+    full_remote IS $5`
+      : null;
 
-  const whereKeyword = inputQuery || cityQuery || remoteQuery ? `WHERE (
+  const whereKeyword =
+    inputQuery || cityQuery || remoteQuery
+      ? `WHERE (
     ${inputQuery ? inputQuery : ""}
     ${inputQuery && cityQuery ? "AND" : ""} 
     ${cityQuery ? cityQuery : ""}
     ${remoteQuery && (cityQuery || inputQuery) ? "AND" : ""}
     ${remoteQuery ? remoteQuery : ""}
-  )` : ""
+  )`
+      : "";
 
   let dbCommand = `
   SELECT * 
@@ -30,17 +39,18 @@ const getAllJobs = async (limitValue, startValue, input, city, remote) => {
   ORDER BY id 
   LIMIT $1  
   OFFSET $2
-  `
+  `;
   const allJobs = await db.any(
     `
     ${dbCommand}
-     `, [limitValue, startValue, input, `%${city}%`, remote] 
+     `,
+    [limitValue, startValue, input, `%${city}%`, remote]
   );
-// console.log(dbCommand)
-console.log(allJobs)
+  // add ercentage to input and like statement throughtout
+  console.log(dbCommand);
 
   return allJobs;
-}
+};
 
 const getSkillsForJobByJobId = async (jobId) => {
   const allSkills = await db.any(
@@ -49,10 +59,12 @@ const getSkillsForJobByJobId = async (jobId) => {
     JOIN skills
     ON jobs_skills.skill_id = skills.id
     WHERE jobs_skills.job_id = $1
-   `, [jobId])
+   `,
+    [jobId]
+  );
 
   return allSkills;
-}
+};
 
 const getOneJob = async (jobID) => {
   try {
@@ -138,5 +150,5 @@ module.exports = {
   createJob,
   updateJob,
   deleteJob,
-  getSkillsForJobByJobId
+  getSkillsForJobByJobId,
 };
