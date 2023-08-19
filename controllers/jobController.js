@@ -28,7 +28,7 @@ jobs.get("/", jobQuerySchema, validationError, async (req, res) => {
  }
 
   const allJobs = await getAllJobs(limit, start, input, city, isRemote);
-
+console.log(allJobs)
   const allJobsWithSkills = await Promise.all(
     allJobs.map(async job => {
       let skills = await(getSkillsForJobByJobId(job.id));

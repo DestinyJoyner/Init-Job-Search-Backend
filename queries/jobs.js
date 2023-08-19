@@ -3,53 +3,59 @@ const { createJobSkill, deleteAllJobSkills } = require("./jobSkills.js");
 
 const getAllJobs = async (limitValue, startValue, input, city, remote) => {
   const inputQuery = input
-    ? `  (
-    to_tsvector(LOWER(regexp_replace(title, 's', '', 'g')))  ||
-    to_tsvector(LOWER(regexp_replace(city, 's', '', 'g')))  ||
-    to_tsvector(LOWER(regexp_replace(details, 's', '', 'g')))  ||
-    to_tsvector(LOWER(regexp_replace(company, 's', '', 'g')))  
-    ) @@ to_tsquery($3)`
+  ? `  (
+    (
+  (LOWER(regexp_replace(title, ' ', '', 'g')) LIKE $3)  OR
+  (LOWER(regexp_replace(city, ' ', '', 'g')) LIKE $3)  OR
+  (LOWER(regexp_replace(details, ' ', '', 'g')) LIKE $3)  OR
+  (LOWER(regexp_replace(company, ' ', '', 'g')) LIKE $3)
+  ) 
+
+)`
+  : null;
+
+const cityQuery = city
+  ? `LOWER(regexp_replace(city, ' ', '', 'g')) LIKE $4`
+  : null;
+
+const remoteQuery =
+  remote !== undefined
+    ? `
+  full_remote IS $5`
     : null;
 
-  const cityQuery = city
-    ? `LOWER(regexp_replace(city, ' ', '', 'g')) LIKE $4`
-    : null;
+const whereKeyword =
+  inputQuery || cityQuery || remoteQuery
+    ? `WHERE (
+  ${inputQuery ? inputQuery : ""}
+  ${inputQuery && cityQuery ? "AND" : ""} 
+  ${cityQuery ? cityQuery : ""}
+  ${remoteQuery && (cityQuery || inputQuery) ? "AND" : ""}
+  ${remoteQuery ? remoteQuery : ""}
+)`
+    : "";
 
-  const remoteQuery =
-    remote !== undefined
-      ? `
-    full_remote IS $5`
-      : null;
-
-  const whereKeyword =
-    inputQuery || cityQuery || remoteQuery
-      ? `WHERE (
-    ${inputQuery ? inputQuery : ""}
-    ${inputQuery && cityQuery ? "AND" : ""} 
-    ${cityQuery ? cityQuery : ""}
-    ${remoteQuery && (cityQuery || inputQuery) ? "AND" : ""}
-    ${remoteQuery ? remoteQuery : ""}
-  )`
-      : "";
-
-  let dbCommand = `
-  SELECT * 
-  FROM jobs
-  ${whereKeyword && whereKeyword}
-  ORDER BY id 
-  LIMIT $1  
-  OFFSET $2
-  `;
-  const allJobs = await db.any(
-    `
-    ${dbCommand}
-     `,
-    [limitValue, startValue, input, `%${city}%`, remote]
-  );
-  // add ercentage to input and like statement throughtout
-  console.log(dbCommand);
-
-  return allJobs;
+let dbCommand = `
+SELECT * 
+FROM jobs
+${whereKeyword && whereKeyword}
+ORDER BY id 
+LIMIT $1  
+OFFSET $2
+`;
+  try {
+    const allJobs = await db.any(
+      `
+      ${dbCommand}
+       `,
+      [limitValue, startValue, `%${input}%`, `%${city}%`, remote]
+    );
+      
+    return allJobs;
+    
+  } catch (error) {
+    return error
+  }
 };
 
 const getSkillsForJobByJobId = async (jobId) => {
