@@ -45,7 +45,7 @@ if(allJobs.length > 0){
   )
   res.status(200).json(allJobsWithSkills);
 }
-if(allJobs.length === 0){
+else if(allJobs.length === 0){
   res.status(200).json(allJobs)
 }
   else {

@@ -3,10 +3,9 @@ const db = require("../db/dbConfig.js");
 //All skills
 const getAllSkills = async () => {
   try {
-    // const allSkills = await db.any("SELECT * FROM skills");
-    const allSkills = await db.any("\dt;");
-
+    const allSkills = await db.any("SELECT * FROM skills");s
     return allSkills;
+    
   } catch (error) {
     return error;
   }

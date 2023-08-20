@@ -5,14 +5,14 @@ const { getAllSkills, getSkillByID } = require("../queries/skills");
 // Index
 skills.get("/", async (req, res) => {
   const allSkills = await getAllSkills();
-  res.status(200).json(allSkills)
-  // if (allSkills.length) {
-  //   res.status(200).json(allSkills);
-  // } else {
-  //   res.status(500).json({
-  //     error: "Server error",
-  //   });
-  // }
+ 
+  if (allSkills.length) {
+    res.status(200).json(allSkills);
+  } else {
+    res.status(500).json({
+      error: "Server error",
+    });
+  }
 });
 
 // Show
