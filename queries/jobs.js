@@ -1,9 +1,17 @@
 const db = require("../db/dbConfig.js");
 const { createJobSkill, deleteAllJobSkills } = require("./jobSkills.js");
 
-const getAllJobs = async (limitValue, startValue, input, city, remote) => {
+const getAllJobs = async (
+  limitValue,
+  startValue,
+  input,
+  city,
+  remote,
+  skills,
+  skillCount
+) => {
   const inputQuery = input
-  ? `  (
+    ? `  (
     (
   (LOWER(regexp_replace(title, ' ', '', 'g')) LIKE $3)  OR
   (LOWER(regexp_replace(city, ' ', '', 'g')) LIKE $3)  OR
@@ -12,50 +20,71 @@ const getAllJobs = async (limitValue, startValue, input, city, remote) => {
   ) 
 
 )`
-  : null;
-
-const cityQuery = city
-  ? `LOWER(regexp_replace(city, ' ', '', 'g')) LIKE $4`
-  : null;
-
-const remoteQuery =
-  remote !== undefined
-    ? `
-  full_remote IS $5`
     : null;
 
-const whereKeyword =
-  inputQuery || cityQuery || remoteQuery
-    ? `WHERE (
+  const cityQuery = city
+    ? `LOWER(regexp_replace(city, ' ', '', 'g')) LIKE $4`
+    : null;
+
+  const remoteQuery =
+    remote !== undefined
+      ? `
+  full_remote IS $5`
+      : null;
+
+  const whereKeyword =
+    inputQuery || cityQuery || remoteQuery || skills
+      ? `WHERE (
+  ${skills ? skills : ""}
+  ${skills && (inputQuery || cityQuery || remoteQuery) ? "AND" : ""}
   ${inputQuery ? inputQuery : ""}
   ${inputQuery && cityQuery ? "AND" : ""} 
   ${cityQuery ? cityQuery : ""}
   ${remoteQuery && (cityQuery || inputQuery) ? "AND" : ""}
   ${remoteQuery ? remoteQuery : ""}
 )`
-    : "";
+      : "";
 
-let dbCommand = 
-`SELECT * 
+  let dbCommand = skills
+    ? `SELECT 
+id, title, company, city, details, full_remote, tasks, recruiter_id
+FROM jobs
+INNER JOIN jobs_skills
+ON jobs_skills.job_id=jobs.id 
+${whereKeyword && whereKeyword}
+GROUP BY jobs.id 
+HAVING 
+COUNT(job_id) = $7
+ORDER BY id 
+LIMIT $1  
+OFFSET $2
+`
+    : `SELECT * 
 FROM jobs
 ${whereKeyword && whereKeyword}
 ORDER BY id 
 LIMIT $1  
 OFFSET $2
 `;
-console.log(dbCommand)
   try {
     const allJobs = await db.any(
       `
       ${dbCommand}
        `,
-      [limitValue, startValue, `%${input}%`, `%${city}%`, remote]
+      [
+        limitValue,
+        startValue,
+        `%${input}%`,
+        `%${city}%`,
+        remote,
+        skills,
+        skillCount,
+      ]
     );
 
     return allJobs;
-    
   } catch (error) {
-    return error
+    return error;
   }
 };
 

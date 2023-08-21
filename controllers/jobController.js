@@ -35,14 +35,25 @@ jobs.get("/", jobQuerySchema, validationError, async (req, res) => {
     }
   }
 
-  let skillsQueryArr = undefined
-  if(skills){
-   skillsQueryArr = skills.split(",").map(el => +el)
+  let skillCount = undefined;
+  let skillDbSyntax = undefined;
+  if (skills) {
+    const skillQueryArr = skills.split(",");
+    skillCount = skillQueryArr.length;
+    const addQueryText = skillQueryArr.map((skill) => `skill_id=${+skill}`);
+    skillDbSyntax = addQueryText.join(" OR ");
   }
-  // let skillsDbSyntax = skills ?  "(" + skills + ")" : undefined
 
-  const allJobs = await getAllJobs(limit, start, input, city, isRemote);
-// console.log(allJobs)
+  const allJobs = await getAllJobs(
+    limit,
+    start,
+    input,
+    city,
+    isRemote,
+    skillDbSyntax,
+    skillCount
+  );
+
   if (allJobs.length > 0) {
     const allJobsWithSkills = await Promise.all(
       allJobs.map(async (job) => {
@@ -57,15 +68,7 @@ jobs.get("/", jobQuerySchema, validationError, async (req, res) => {
         return job;
       })
     );
-    
-    if(skills){
-      const allJobsFilteredWithSkills = allJobsWithSkills.filter(({skill_id}) => skillsQueryArr.every(el => skill_id.includes(el)))
-      res.status(200).json(allJobsFilteredWithSkills)
-    }
-    else {
-      res.status(200).json(allJobsWithSkills);
-    }
-    
+    res.status(200).json(allJobsWithSkills);
   } else if (allJobs.length === 0) {
     res.status(200).json(allJobs);
   } else {
