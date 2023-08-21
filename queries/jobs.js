@@ -35,14 +35,15 @@ const whereKeyword =
 )`
     : "";
 
-let dbCommand = `
-SELECT * 
+let dbCommand = 
+`SELECT * 
 FROM jobs
 ${whereKeyword && whereKeyword}
 ORDER BY id 
 LIMIT $1  
 OFFSET $2
 `;
+console.log(dbCommand)
   try {
     const allJobs = await db.any(
       `
@@ -50,7 +51,7 @@ OFFSET $2
        `,
       [limitValue, startValue, `%${input}%`, `%${city}%`, remote]
     );
-      
+
     return allJobs;
     
   } catch (error) {
