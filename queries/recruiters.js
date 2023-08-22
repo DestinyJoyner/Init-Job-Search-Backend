@@ -17,7 +17,7 @@ const getOneRecruiter = async (recruiterID) => {
     );
 
     const recruiterJobs = await db.any(
-      "SELECT title, company, city, full_remote, id from jobs WHERE recruiter_id=$1",
+      "SELECT title, company, city, full_remote, id from jobs WHERE recruiter_id=$1 ORDER BY id",
       recruiterID
     );
 
