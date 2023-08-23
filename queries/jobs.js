@@ -121,6 +121,7 @@ const getOneJob = async (jobID) => {
 };
 
 const createJob = async ({ jobDetails, skills }) => {
+  // console.log(skills, jobDetails)
   try {
     const { title, company, city, details, full_remote, tasks, recruiter_id } =
       jobDetails;
@@ -138,6 +139,7 @@ const createJob = async ({ jobDetails, skills }) => {
     });
     return newJob;
   } catch (error) {
+    console.log(error)
     return error;
   }
 };

@@ -96,6 +96,7 @@ jobs.post(
   jobSchema,
   validationError,
   async (req, res) => {
+    console.log(req.body)
     const newJob = await createJob(req.body);
     if (!newJob.message) {
       res.status(200).json(newJob);
