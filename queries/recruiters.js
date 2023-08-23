@@ -27,27 +27,55 @@ const getOneRecruiter = async (recruiterID) => {
     );
 
     recruiterJobs.forEach(({ id }, i) =>
-      recruiterJobsUsers.forEach((e) =>
-        id === e["job_id"]
-          ? recruiterJobs[i].users !== undefined
-            ? (recruiterJobs[i].users = [
-                ...recruiterJobs[i].users,
-                {
-                  ["user_id"]: e["user_id"],
-                  ["first_name"]: e["first_name"],
-                  ["last_name"]: e["last_name"],
-                  ["email"]: e["email"],
-                },
-              ])
-            : (recruiterJobs[i].users = [
-                {
-                  ["user_id"]: e["user_id"],
-                  ["first_name"]: e["first_name"],
-                  ["last_name"]: e["last_name"],
-                  ["email"]: e["email"],
-                },
-              ])
-          : null
+      recruiterJobsUsers.forEach((e) =>{
+       if(id === e["job_id"]){
+        if(recruiterJobs[i].users){
+          recruiterJobs[i].users = [
+            ...recruiterJobs[i].users,
+            {
+              ["user_id"]: e["user_id"],
+              ["first_name"]: e["first_name"],
+              ["last_name"]: e["last_name"],
+              ["email"]: e["email"],
+            },
+          ]
+        }else {
+          recruiterJobs[i].users = [
+            {
+              ["user_id"]: e["user_id"],
+              ["first_name"]: e["first_name"],
+              ["last_name"]: e["last_name"],
+              ["email"]: e["email"],
+            },
+          ]
+        }
+        
+       }
+       else {
+        recruiterJobs[i].users = []
+       }
+          // ? recruiterJobs[i].users !== undefined
+      //       ? (recruiterJobs[i].users = [
+      //           ...recruiterJobs[i].users,
+      //           {
+      //             ["user_id"]: e["user_id"],
+      //             ["first_name"]: e["first_name"],
+      //             ["last_name"]: e["last_name"],
+      //             ["email"]: e["email"],
+      //           },
+      //         ])
+      //       : (recruiterJobs[i].users = [
+      //           {
+      //             ["user_id"]: e["user_id"],
+      //             ["first_name"]: e["first_name"],
+      //             ["last_name"]: e["last_name"],
+      //             ["email"]: e["email"],
+      //           },
+      //         ])
+      //     : null
+      }
+        
+          
       )
     );
 
