@@ -47,7 +47,7 @@ const getOneRecruiter = async (recruiterID) => {
                   ["email"]: e["email"],
                 },
               ])
-          : recruiterJobs[i].users = []
+          : null
       )
     );
 
