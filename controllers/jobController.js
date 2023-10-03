@@ -21,37 +21,55 @@ const {
 } = require("../middleware/schemaValidations/errorValidation.js");
 const { deleteAllUserSkills } = require("../queries/userSkills.js");
 
+// Search Query Conversion string functions
+const { databaseSearchQueryString } = require("../middleware/jobsControllerDbSearchQuery.js");
+const { databaseSearchWithSkillsQueryString } = require("../middleware/jobsControllerSkillSearchQuery.js");
+const { databaseRemoteSearchQuery } = require("../middleware/jobsControllerRemoteSearchQuery.js")
+
 // INDEX
 jobs.get("/", jobQuerySchema, validationError, async (req, res) => {
   const { start, limit, input, city, remote, skills } = req.query;
 
-  let isRemote = undefined;
-  if (remote !== undefined) {
-    if (remote.toLowerCase() === "true") {
-      isRemote = true;
-    }
-    if (remote.toLowerCase() === "false") {
-      isRemote = false;
-    }
-  }
+  const isRemote = databaseRemoteSearchQuery(remote)
 
-  let skillCount = undefined;
-  let skillDbSyntax = undefined;
-  if (skills) {
-    const skillQueryArr = skills.split(",");
-    skillCount = skillQueryArr.length;
-    const addQueryText = skillQueryArr.map((skill) => `skill_id=${+skill}`);
-    skillDbSyntax = addQueryText.join(" OR ");
-  }
+  const skillsObj = databaseSearchWithSkillsQueryString(skills)
+
+  const dbSearchResultCommand = databaseSearchQueryString(input, city, isRemote, skillsObj) 
+
+  // let isRemote = undefined;
+  // if (remote !== undefined) {
+  //   if (remote.toLowerCase() === "true") {
+  //     isRemote = true;
+  //   }
+  //   if (remote.toLowerCase() === "false") {
+  //     isRemote = false;
+  //   }
+  // }
+
+  // let skillCount = undefined;
+  // let skillDbSyntax = undefined;
+  // if (skills) {
+  //   const skillQueryArr = skills.split(",");
+  //   skillCount = skillQueryArr.length;
+  //   const addQueryText = skillQueryArr.map((skill) => `skill_id=${+skill}`);
+  //   skillDbSyntax = addQueryText.join(" OR ");
+  // }
+  // limitValue,
+  // startValue,
+  // dbQueryString,
+  // input,
+  // city,
+  // remote,
+  // skillsObj,
 
   const allJobs = await getAllJobs(
     limit,
     start,
+    dbSearchResultCommand,
     input,
     city,
     isRemote,
-    skillDbSyntax,
-    skillCount
+    skillsObj
   );
 
   if (allJobs.length > 0) {
