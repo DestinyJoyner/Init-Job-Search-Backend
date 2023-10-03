@@ -9,8 +9,7 @@ const getAllJobs = async (
   input,
   city,
   remote,
-  skillsObj,
- 
+  skillsObj
 ) => {
  const { skillDbSyntax, skillCount} = skillsObj
 
@@ -31,104 +30,39 @@ const getAllJobs = async (
     );
 
     return allJobs;
+
   } catch (error) {
     return error;
   }
 };
 
+const getCountForJobSearch = async(dbSearchCountQuery, input,
+  city,
+  remote,
+  skillsObj,limitValue=null, startValue=null) => {
+    const { skillDbSyntax, skillCount} = skillsObj
+    try {
+      const searchCount = await db.one(
+        `
+        ${dbSearchCountQuery}
+         `,
+        [ limitValue,
+          startValue,
+          `%${input}%`,
+          `%${city}%`,
+          remote,
+          skillDbSyntax,
+          skillCount,
+        ]
+      );
+  
+      return searchCount;
+  
+    } catch (error) {
+      return error;
+    }
+}
 
-
-
-
-
-
-
-// const getAllJobs = async (
-//   limitValue,
-//   startValue,
-//   input,
-//   city,
-//   remote,
-//   skills,
-//   skillCount
-// ) => {
-//   const inputQuery = input
-//     ? `  (
-//     (
-//   (LOWER(regexp_replace(title, ' ', '', 'g')) LIKE $3)  OR
-//   (LOWER(regexp_replace(city, ' ', '', 'g')) LIKE $3)  OR
-//   (LOWER(regexp_replace(details, ' ', '', 'g')) LIKE $3)  OR
-//   (LOWER(regexp_replace(company, ' ', '', 'g')) LIKE $3)
-//   ) 
-
-// )`
-//     : null;
-
-//   const cityQuery = city
-//     ? `LOWER(regexp_replace(city, ' ', '', 'g')) LIKE $4`
-//     : null;
-
-//   const remoteQuery =
-//     remote !== undefined
-//       ? `
-//   full_remote IS $5`
-//       : null;
-
-//   const whereKeyword =
-//     inputQuery || cityQuery || remoteQuery || skills
-//       ? `WHERE (
-//   ${skills ? skills : ""}
-//   ${skills && (inputQuery || cityQuery || remoteQuery) ? "AND" : ""}
-//   ${inputQuery ? inputQuery : ""}
-//   ${inputQuery && cityQuery ? "AND" : ""} 
-//   ${cityQuery ? cityQuery : ""}
-//   ${remoteQuery && (cityQuery || inputQuery) ? "AND" : ""}
-//   ${remoteQuery ? remoteQuery : ""}
-// )`
-//       : "";
-
-//   let dbCommand = skills
-//     ? `SELECT 
-// id, title, company, city, details, full_remote, tasks, recruiter_id
-// FROM jobs
-// INNER JOIN jobs_skills
-// ON jobs_skills.job_id=jobs.id 
-// ${whereKeyword && whereKeyword}
-// GROUP BY jobs.id 
-// HAVING 
-// COUNT(job_id) = $7
-// ORDER BY id 
-// LIMIT $1  
-// OFFSET $2
-// `
-//     : `SELECT * 
-// FROM jobs
-// ${whereKeyword && whereKeyword}
-// ORDER BY id 
-// LIMIT $1  
-// OFFSET $2
-// `;
-//   try {
-//     const allJobs = await db.any(
-//       `
-//       ${dbCommand}
-//        `,
-//       [
-//         limitValue,
-//         startValue,
-//         `%${input}%`,
-//         `%${city}%`,
-//         remote,
-//         skills,
-//         skillCount,
-//       ]
-//     );
-
-//     return allJobs;
-//   } catch (error) {
-//     return error;
-//   }
-// };
 
 const getSkillsForJobByJobId = async (jobId) => {
   const allSkills = await db.any(
@@ -231,4 +165,5 @@ module.exports = {
   updateJob,
   deleteJob,
   getSkillsForJobByJobId,
+  getCountForJobSearch
 };

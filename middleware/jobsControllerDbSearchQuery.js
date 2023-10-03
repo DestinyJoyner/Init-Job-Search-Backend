@@ -69,10 +69,9 @@ HAVING
 COUNT(job_id) = $7
 ORDER BY id 
 `
-: `SELECT COUNT(id) 
+: `SELECT COUNT(id)
 FROM jobs
 ${whereKeyword && whereKeyword}
-ORDER BY id 
 `;
 
 

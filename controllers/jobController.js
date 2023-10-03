@@ -7,6 +7,7 @@ const {
   updateJob,
   deleteJob,
   getSkillsForJobByJobId,
+  getCountForJobSearch
 } = require("../queries/jobs.js");
 const {
   taskFormat,
@@ -35,6 +36,8 @@ jobs.get("/", jobQuerySchema, validationError, async (req, res) => {
   const skillsObj = databaseSearchWithSkillsQueryString(skills)
 
   const dbSearchResultCommand = databaseSearchQueryString(input, city, isRemote, skillsObj) 
+
+  const dbSearchCountCommand = databaseSearchQueryString(input, city, isRemote, skillsObj, true)
 
   // let isRemote = undefined;
   // if (remote !== undefined) {
@@ -71,6 +74,8 @@ jobs.get("/", jobQuerySchema, validationError, async (req, res) => {
     isRemote,
     skillsObj
   );
+
+  const jobCount = await getCountForJobSearch(dbSearchCountCommand,input, city, isRemote, skillsObj)
 
   if (allJobs.length > 0) {
     const allJobsWithSkills = await Promise.all(
