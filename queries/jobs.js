@@ -139,7 +139,7 @@ const createJob = async ({ jobDetails, skills }) => {
     });
     return newJob;
   } catch (error) {
-    console.log(error)
+    // console.log(error)
     return error;
   }
 };
