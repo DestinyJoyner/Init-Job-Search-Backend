@@ -7,7 +7,7 @@ const {
   updateJob,
   deleteJob,
   getSkillsForJobByJobId,
-  getCountForJobSearch
+  getCountForJobSearch,
 } = require("../queries/jobs.js");
 const {
   taskFormat,
@@ -23,47 +23,38 @@ const {
 const { deleteAllUserSkills } = require("../queries/userSkills.js");
 
 // Search Query Conversion string functions
-const { databaseSearchQueryString } = require("../middleware/jobsControllerDbSearchQuery.js");
-const { databaseSearchWithSkillsQueryString } = require("../middleware/jobsControllerSkillSearchQuery.js");
-const { databaseRemoteSearchQuery } = require("../middleware/jobsControllerRemoteSearchQuery.js")
+const {
+  databaseSearchQueryString,
+} = require("../middleware/jobsControllerDbSearchQuery.js");
+const {
+  databaseSearchWithSkillsQueryString,
+} = require("../middleware/jobsControllerSkillSearchQuery.js");
+const {
+  databaseRemoteSearchQuery,
+} = require("../middleware/jobsControllerRemoteSearchQuery.js");
 
 // INDEX
 jobs.get("/", jobQuerySchema, validationError, async (req, res) => {
   const { start, limit, input, city, remote, skills } = req.query;
 
-  const isRemote = databaseRemoteSearchQuery(remote)
+  const isRemote = databaseRemoteSearchQuery(remote);
 
-  const skillsObj = databaseSearchWithSkillsQueryString(skills)
+  const skillsObj = databaseSearchWithSkillsQueryString(skills);
 
-  const dbSearchResultCommand = databaseSearchQueryString(input, city, isRemote, skillsObj) 
+  const dbSearchResultCommand = databaseSearchQueryString(
+    input,
+    city,
+    isRemote,
+    skillsObj
+  );
 
-  const dbSearchCountCommand = databaseSearchQueryString(input, city, isRemote, skillsObj, true)
-
-  // let isRemote = undefined;
-  // if (remote !== undefined) {
-  //   if (remote.toLowerCase() === "true") {
-  //     isRemote = true;
-  //   }
-  //   if (remote.toLowerCase() === "false") {
-  //     isRemote = false;
-  //   }
-  // }
-
-  // let skillCount = undefined;
-  // let skillDbSyntax = undefined;
-  // if (skills) {
-  //   const skillQueryArr = skills.split(",");
-  //   skillCount = skillQueryArr.length;
-  //   const addQueryText = skillQueryArr.map((skill) => `skill_id=${+skill}`);
-  //   skillDbSyntax = addQueryText.join(" OR ");
-  // }
-  // limitValue,
-  // startValue,
-  // dbQueryString,
-  // input,
-  // city,
-  // remote,
-  // skillsObj,
+  const dbSearchCountCommand = databaseSearchQueryString(
+    input,
+    city,
+    isRemote,
+    skillsObj,
+    true
+  );
 
   const allJobs = await getAllJobs(
     limit,
@@ -75,7 +66,13 @@ jobs.get("/", jobQuerySchema, validationError, async (req, res) => {
     skillsObj
   );
 
-  const jobCount = await getCountForJobSearch(dbSearchCountCommand,input, city, isRemote, skillsObj)
+  const jobCount = await getCountForJobSearch(
+    dbSearchCountCommand,
+    input,
+    city,
+    isRemote,
+    skillsObj
+  );
 
   if (allJobs.length > 0) {
     const allJobsWithSkills = await Promise.all(
@@ -91,8 +88,13 @@ jobs.get("/", jobQuerySchema, validationError, async (req, res) => {
         return job;
       })
     );
+
+    // unshift (beginning) search result count obj with returned job array
+    allJobsWithSkills.unshift(jobCount);
+
     res.status(200).json(allJobsWithSkills);
   } else if (allJobs.length === 0) {
+    allJobs.unshift(jobCount);
     res.status(200).json(allJobs);
   } else {
     res.status(500).json({ Error: allJobs.message });
