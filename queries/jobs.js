@@ -42,7 +42,7 @@ const getCountForJobSearch = async(dbSearchCountQuery, input,
   skillsObj,limitValue=null, startValue=null) => {
     const { skillDbSyntax, skillCount} = skillsObj
     try {
-      const searchCount = await db.one(
+      const searchCount = await db.any(
         `
         ${dbSearchCountQuery}
          `,
@@ -56,7 +56,7 @@ const getCountForJobSearch = async(dbSearchCountQuery, input,
         ]
       );
   
-      return searchCount;
+      return {count: searchCount.length};
   
     } catch (error) {
       return error;

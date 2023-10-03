@@ -64,6 +64,10 @@ FROM jobs
 INNER JOIN jobs_skills
 ON jobs_skills.job_id=jobs.id 
 ${whereKeyword && whereKeyword}
+GROUP BY jobs.id 
+HAVING 
+COUNT(job_id) = $7
+ORDER BY id 
 
 `
 : `SELECT COUNT(id)
@@ -71,10 +75,7 @@ FROM jobs
 ${whereKeyword && whereKeyword}
 `;
 
-/* GROUP BY jobs.id 
-HAVING 
-COUNT(job_id) = $7
-ORDER BY id  */
+
 if(!forCount){
     return dbCommand
 }
