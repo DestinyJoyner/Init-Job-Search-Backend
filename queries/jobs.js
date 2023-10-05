@@ -55,7 +55,7 @@ const getCountForJobSearch = async(dbSearchCountQuery, input,
           skillCount,
         ]
       );
-  console.log(searchCount, "searchCount")
+
       if(searchCount.length > 1){
         return [{count : searchCount.length}]
       }
