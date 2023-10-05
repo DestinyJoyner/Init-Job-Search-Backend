@@ -56,7 +56,13 @@ const getCountForJobSearch = async(dbSearchCountQuery, input,
         ]
       );
   
-      return searchCount;
+      if(Array.isArray(searchCount)){
+        return {count : searchCount.length}
+      }
+      else {
+        return searchCount;
+      }
+      
   
     } catch (error) {
       return error;
