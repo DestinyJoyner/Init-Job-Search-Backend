@@ -82,6 +82,24 @@ CREATE TABLE jobs_skills (
     skill_id INTEGER REFERENCES skills (id) ON DELETE CASCADE
 );
 
+DROP TABLE IF EXISTS company;
+
+CREATE TABLE company (
+    id SERIAL PRIMARY KEY,
+    company_name VARCHAR(100) NOT NULL,
+    company_description VARCHAR(4000),
+    website VARCHAR(250)
+);
+
+DROP TABLE IF EXISTS company;
+
+CREATE TABLE company (
+    id SERIAL PRIMARY KEY,
+    company_name VARCHAR(100) NOT NULL,
+    company_description VARCHAR(4000),
+    website VARCHAR(250)
+);
+
 
 
 
