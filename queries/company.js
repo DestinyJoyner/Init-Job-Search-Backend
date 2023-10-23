@@ -12,7 +12,7 @@ const getAllCompanies = async () => {
 
 const getOneCompany = async (name) => {
     try {
-        const companyDetails = await db.one("SELECT * FROM company WHERE LOWER(regexp_replace(company_name, ' ', '', 'g')) LIKE '$1'", name);
+        const companyDetails = await db.one("SELECT * FROM company WHERE LOWER(regexp_replace(company_name, ' ', '', 'g')) LIKE $1", `%${name}%`);
         return companyDetails
         
       } catch (error) {
