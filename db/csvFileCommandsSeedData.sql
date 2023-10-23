@@ -25,3 +25,6 @@
 -- jobs-skills
 \copy jobs_skills FROM '/Users/destinyjoyner/inIT-CSV-Files/init_jobs_skills.csv' WITH (FORMAT CSV,HEADER true, DELIMITER ',');
 
+--company
+\copy company FROM '/Users/destinyjoyner/inIT-CSV-Files/companies_description_init.csv' WITH (FORMAT CSV,HEADER true, DELIMITER ',');
+
