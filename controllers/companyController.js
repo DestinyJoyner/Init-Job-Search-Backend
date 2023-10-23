@@ -13,7 +13,6 @@ company.get("/:companyName", async (req, res) => {
 
     const oneCompany = await getOneCompany(companyName)
 
-    console.log(oneCompany, companyName)
 
     if (!oneCompany.message) {
         res.status(200).json(oneCompany);
