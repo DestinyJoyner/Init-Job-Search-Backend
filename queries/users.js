@@ -1,5 +1,6 @@
 const db = require("../db/dbConfig.js");
 const { deleteAllUserSkills } = require("./userSkills.js");
+const {addProject, updateProject, getOneProject} = require("./projects.js")
 
 const getAllUsers = async () => {
   try {
@@ -13,6 +14,7 @@ const getAllUsers = async () => {
 const getUserByID = async (userID) => {
   try {
     const oneUser = await db.one("SELECT * FROM users WHERE id=$1", userID);
+
     const userSkills = await db.any(
       "SELECT * FROM users_skills JOIN skills ON skills.id = users_skills.skill_id WHERE user_id=$1",
       userID
@@ -22,6 +24,10 @@ const getUserByID = async (userID) => {
       skill_names: userSkills.map(({ skill_name }) => skill_name),
       skill_ids: userSkills.map(({ skill_id }) => skill_id),
     };
+
+    oneUser.project = await getOneProject(userID)
+
+
 
     // oneUser.skills["skill_names"] = userSkills.map(({ skill_name }) => skill_name);
     // oneUser.skills["skill_ids"] = userSkills.map(({ skill_id }) => skill_id);
@@ -33,13 +39,12 @@ const getUserByID = async (userID) => {
 
 const createUser = async ({ profile, skills, login }) => {
   // conditionals for projects tbd
-  const { first_name, last_name, education, bio, project_one, project_two } =
-    profile;
+  const { first_name, last_name, education, bio, project } = profile;
   const { email, password } = login;
   try {
     const newUser = await db.one(
-      "INSERT INTO users (first_name, last_name, education, bio, project_one, project_two) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
-      [first_name, last_name, education, bio, project_one, project_two]
+      "INSERT INTO users (first_name, last_name, education, bio) VALUES ($1, $2, $3, $4) RETURNING *",
+      [first_name, last_name, education, bio]
     );
     db.one(
       "INSERT INTO logins (email, password, user_id) VALUES ($1, $2, $3) RETURNING *",
@@ -51,6 +56,9 @@ const createUser = async ({ profile, skills, login }) => {
         [newUser.id, e]
       )
     );
+
+    addProject(newUser.id, project)
+
     return newUser;
   } catch (error) {
     return error;
@@ -58,20 +66,26 @@ const createUser = async ({ profile, skills, login }) => {
 };
 
 const updateUser = async ({ profile, skills }, userID) => {
-  const { first_name, last_name, education, bio, project_one, project_two } =
+  const { first_name, last_name, education, bio, project} =
     profile;
+    
   try {
     const updatedUser = await db.one(
-      "UPDATE users SET first_name=$1, last_name=$2, education=$3, bio=$4, project_one=$5, project_two=$6 WHERE id=$7 RETURNING *",
-      [first_name, last_name, education, bio, project_one, project_two, userID]
+      "UPDATE users SET first_name=$1, last_name=$2, education=$3, bio=$4 WHERE id=$5 RETURNING *",
+      [first_name, last_name, education, bio, userID]
     );
+    
     deleteAllUserSkills(userID);
     skills.forEach((e) =>
       db.one(
-        "INSERT INTO users_skills (user_id, skill_id) VALUES ($1, $2)RETURNING *",
+        "INSERT INTO users_skills (user_id, skill_id) VALUES ($1, $2) RETURNING *",
         [userID, e]
       )
     );
+    console.log("update", updateUser)
+
+   updateProject(userID,project)
+
     return updatedUser;
   } catch (error) {
     return error;

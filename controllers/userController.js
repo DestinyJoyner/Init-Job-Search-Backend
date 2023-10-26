@@ -121,3 +121,25 @@ module.exports = users;
 
 }
 */
+
+
+/* {
+  "login": {
+      "email": "user1@email.com",
+      "password": "1Password!"
+  },
+  "profile":
+  {
+      "first_name": "Destiny",
+      "last_name": "Joyner",
+      "education": "Pursuit",
+      "bio": "A full stack web developer from Harlem, NY interested in mobile application design",
+      "project" : {
+          "project_name": "inIT",
+          "project_link" : "https://github.com/DestinyJoyner/Init-Job-Search",
+          "project_description": "inIT is a PERN STACK job search engine designed to connect employers looking to fill entry level positions with recent coding bootcamp and college program graduates, looking for their first tech opportunity."
+      }
+  },
+  "skills": [1,2,3,8]
+
+} */

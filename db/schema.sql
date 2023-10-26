@@ -11,8 +11,6 @@ CREATE TABLE users (
     last_name VARCHAR(25) NOT NULL,
     education VARCHAR(50) NOT NULL,
     bio VARCHAR(255),
-    project_one TEXT DEFAULT 'no link',
-    project_two TEXT DEFAULT 'no link'
 );
 
 DROP TABLE IF EXISTS logins;
@@ -98,6 +96,15 @@ CREATE TABLE company (
     company_name VARCHAR(100) NOT NULL,
     company_description VARCHAR(4000),
     website VARCHAR(250)
+);
+
+DROP TABLE IF EXISTS users_projects;
+
+CREATE TABLE users_projects (
+    user_id INTEGER REFERENCES users (id) ON DELETE CASCADE,
+    project_name VARCHAR(250),
+    project_link VARCHAR(250) NOT NULL,
+    project_description VARCHAR(1000)
 );
 
 

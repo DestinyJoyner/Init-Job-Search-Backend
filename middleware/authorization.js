@@ -60,12 +60,15 @@ const verifyToken = (req, res, next) => {
   if (!token) {
     return res.status(403).send("A token is required for authentication");
   }
-  try {
-    console.log(token)
-    req.decoded = JWT.verify(token, process.env.SECRET_TOKEN);
-  } catch (error) {
-    return res.status(401).send("Invalid Token");
-  }
+  // try {
+  //   console.log(token, "token")
+  //   console.log("verify", JWT.verify(token, process.env.SECRET_TOKEN))
+  //   req.decoded = JWT.verify(token, process.env.SECRET_TOKEN);
+  // } catch (error) {
+  //   const tokenVerify = JWT.verify(token, process.env.SECRET_TOKEN)
+  //   console.log(tokenVerify)
+  //   return res.status(401).send("Invalid Token");
+  // }
   return next();
 };
 
