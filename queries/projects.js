@@ -46,7 +46,19 @@ const getOneProject = async(userID) => {
         return userProject
         
     } catch (error) {
+      if(error.message === "No data returned from the query."){
+        return {
+          user_id: +userID,
+          project_name: "",
+          project_link: "",
+          project_description: ""
+
+        }
+      }
+      else {
         return error
+      }
+        
     }
 }
 
