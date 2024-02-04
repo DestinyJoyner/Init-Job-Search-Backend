@@ -33,7 +33,7 @@ users.get("/", async (req, res) => {
   }
 });
 
-// Show
+// Show 
 users.get("/:id", verifyToken, async (req, res) => {
   const { id } = req.params;
   const user = await getUserByID(id);
@@ -66,7 +66,7 @@ users.post(
   }
 );
 
-// Update
+// Update 
 users.put(
   "/:id",
   skillCheck,
