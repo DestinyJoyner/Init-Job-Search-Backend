@@ -5,12 +5,11 @@ INSERT INTO users (
     last_name,
     education,
     bio,
-    project_one,
-    project_two
+    position
 ) VALUES 
-('Dan', 'Mazzilli', 'Pursuit', 'Interested in sustainability, sports analytics, and resource optimization.', 'https://github.com/Daniel-Mazzilli/9-1-front-end-portfolio-project', 'https://github.com/Daniel-Mazzilli/budgeting-app-front-end'),
-('Destiny', 'Joyner', 'Pursuit', 'Enjoys the problem solving challenges that come with coding. Interested in building immersive worlds in the virtual universe.', 'https://github.com/DestinyJoyner/Budget-App-React', 'https://destiny-calendar-project.netlify.app/'),
-('Ron', 'Jon', 'Pursuit', 'I like cars!', 'link1', 'link2');
+('Destiny', 'Joyner', 'Pursuit', 'Tech is my playground, and I''m here to wow, inspire, and create change. Let''s build something awesome together!', 'Software Engineer'),
+('Dan', 'Mazzilli', 'Pursuit', 'Interested in sustainability, sports analytics, and resource optimization.', 'Full Stack Web Developer');
+
 
 INSERT INTO logins (
     email,

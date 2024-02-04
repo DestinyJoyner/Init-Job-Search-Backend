@@ -5,7 +5,14 @@ const {addProject, updateProject, getOneProject} = require("./projects.js")
 const getAllUsers = async () => {
   try {
     const allUsers = await db.any("SELECT * FROM users");
-    return allUsers;
+    const userData = allUsers.map(({id,first_name}) => {
+      const obj = {
+        id,
+        first_name
+      }
+      return obj
+    })
+    return userData;
   } catch (error) {
     return error;
   }
@@ -39,12 +46,12 @@ const getUserByID = async (userID) => {
 
 const createUser = async ({ profile, skills, login }) => {
   // conditionals for projects tbd
-  const { first_name, last_name, education, bio, project } = profile;
+  const { first_name, last_name, education, bio, project, position } = profile;
   const { email, password } = login;
   try {
     const newUser = await db.one(
-      "INSERT INTO users (first_name, last_name, education, bio) VALUES ($1, $2, $3, $4) RETURNING *",
-      [first_name, last_name, education, bio]
+      "INSERT INTO users (first_name, last_name, education, bio, position) VALUES ($1, $2, $3, $4, $5) RETURNING *",
+      [first_name, last_name, education, bio, position]
     );
     db.one(
       "INSERT INTO logins (email, password, user_id) VALUES ($1, $2, $3) RETURNING *",
@@ -66,13 +73,13 @@ const createUser = async ({ profile, skills, login }) => {
 };
 
 const updateUser = async ({ profile, skills }, userID) => {
-  const { first_name, last_name, education, bio, project} =
+  const { first_name, last_name, education, bio, project, position} =
     profile;
     
   try {
     const updatedUser = await db.one(
-      "UPDATE users SET first_name=$1, last_name=$2, education=$3, bio=$4 WHERE id=$5 RETURNING *",
-      [first_name, last_name, education, bio, userID]
+      "UPDATE users SET first_name=$1, last_name=$2, education=$3, bio=$4, position =$5 WHERE id=$6 RETURNING *",
+      [first_name, last_name, education, bio, position, userID]
     );
     
     deleteAllUserSkills(userID);

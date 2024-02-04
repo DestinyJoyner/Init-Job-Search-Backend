@@ -11,6 +11,7 @@ CREATE TABLE users (
     last_name VARCHAR(25) NOT NULL,
     education VARCHAR(50) NOT NULL,
     bio VARCHAR(255),
+    position VARCHAR(255)
 );
 
 DROP TABLE IF EXISTS logins;
