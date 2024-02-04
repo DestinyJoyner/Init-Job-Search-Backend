@@ -4,15 +4,9 @@ const {addProject, updateProject, getOneProject} = require("./projects.js")
 
 const getAllUsers = async () => {
   try {
-    const allUsers = await db.any("SELECT * FROM users");
-    const userData = allUsers.map(({id,first_name}) => {
-      const obj = {
-        id,
-        first_name
-      }
-      return obj
-    })
-    return userData;
+    const allUsers = await db.any("SELECT id,first_name FROM users");
+   
+    return allUsers;
   } catch (error) {
     return error;
   }
