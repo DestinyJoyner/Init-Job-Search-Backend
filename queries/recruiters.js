@@ -67,7 +67,7 @@ const createRecruiter = async ({ login, profile }) => {
       "INSERT INTO recruiters (first_name, last_name, organization) VALUES ($1, $2, $3)RETURNING *",
       [first_name, last_name, organization]
     );
-    db.one(
+    await db.one(
       "INSERT INTO recruiter_logins (email, password, recruiter_id) VALUES ($1, $2, $3) RETURNING *",
       [email, password, newRecruiter.id]
     );

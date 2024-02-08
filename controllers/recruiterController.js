@@ -53,6 +53,7 @@ recruiters.post(
   hashPass,
   async (req, res) => {
     const newRecruiter = await createRecruiter(req.body);
+  
     if (!newRecruiter.message) {
       res.status(200).json(newRecruiter);
     } else {
