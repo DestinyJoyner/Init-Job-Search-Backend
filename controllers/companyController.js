@@ -3,8 +3,15 @@ const company = express.Router();
 const { getAllCompanies, getOneCompany} = require("../queries/company.js")
 
 company.get("/", async (req, res) => {
-    const allCompanies = await getAllCompanies()
-
+    const {companyName} = req.query
+    let allCompanies
+    if(companyName){
+      allCompanies = await getAllCompanies(companyName)
+    }
+    else{
+      allCompanies = await getAllCompanies()
+    }
+     
     res.status(200).json(allCompanies);
 })
 

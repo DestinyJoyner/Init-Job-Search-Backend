@@ -1,8 +1,16 @@
 const db = require("../db/dbConfig.js");
 
-const getAllCompanies = async () => {
+const getAllCompanies = async (companyName) => {
+  let allCompanies
+  
     try {
-        const allCompanies = await db.any("SELECT * FROM company");
+      if(companyName){
+        allCompanies = await db.any("SELECT company_name FROM company")
+      }
+      else {
+        allCompanies = await db.any("SELECT * FROM company");
+      }
+        
         return allCompanies
         
       } catch (error) {
