@@ -17,10 +17,12 @@ const addProject = async (userID, projectObj) => {
 
 const updateProject = async (userID, projectObj) => {
   const { project_name, project_link, project_description } = projectObj;
+  console.log(projectObj, "update before")
 
   try {
-    const deleteProject = await db.one("DELETE FROM users_projects WHERE user_id=$1", userID)
-    const updateProject =  await addProject(userID, projectObj)
+    await db.one("DELETE FROM users_projects WHERE user_id=$1", userID)
+    const insertProject =  addProject(userID, projectObj)
+    console.log(insertProject, " after re add project")
 
     // const searchForProject = await db.any("SELECT * FROM users_projects WHERE user_id=$1", userID)
 
@@ -34,7 +36,7 @@ const updateProject = async (userID, projectObj) => {
     // );
    
     // }
-    return updateProject;
+    return insertProject;
 
   } catch (error) {
     return error;

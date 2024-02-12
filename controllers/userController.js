@@ -37,7 +37,7 @@ users.get("/", async (req, res) => {
 users.get("/:id", verifyToken, async (req, res) => {
   const { id } = req.params;
   const user = await getUserByID(id);
-  console.log(user)
+
   if (!user.message) {
     res.status(200).json(user);
   } else {
@@ -77,6 +77,7 @@ users.put(
   verifyToken,
   async (req, res) => {
     const { id } = req.params;
+    console.log(req.body, "incoming put req")
     const updatedUser = await updateUser(req.body, id);
     const updatedUserProfile = await getUserByID(id);
     if (!updatedUser.message) {

@@ -83,10 +83,10 @@ const updateUser = async ({ profile, skills }, userID) => {
         [userID, e]
       )
     );
-    console.log("update", updateUser)
 
-   await updateProject(userID,project)
-
+   const projectUpdate = await updateProject(userID,project)
+        updatedUser.project = projectUpdate
+        console.log(updatedUser, "update user")
     return updatedUser;
   } catch (error) {
     return error;
