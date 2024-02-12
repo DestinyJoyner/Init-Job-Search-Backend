@@ -19,7 +19,9 @@ const {
 const {
   validationError,
 } = require("../middleware/schemaValidations/errorValidation.js");
-const { skillCheck } = require("../middleware/schemaValidations/jobValidation.js")
+const {
+  skillCheck,
+} = require("../middleware/schemaValidations/jobValidation.js");
 
 // Index
 users.get("/", async (req, res) => {
@@ -33,7 +35,7 @@ users.get("/", async (req, res) => {
   }
 });
 
-// Show 
+// Show
 users.get("/:id", verifyToken, async (req, res) => {
   const { id } = req.params;
   const user = await getUserByID(id);
@@ -67,7 +69,7 @@ users.post(
   }
 );
 
-// Update 
+// Update
 users.put(
   "/:id",
   skillCheck,
@@ -77,7 +79,6 @@ users.put(
   verifyToken,
   async (req, res) => {
     const { id } = req.params;
-    console.log(req.body, "incoming put req")
     const updatedUser = await updateUser(req.body, id);
     const updatedUserProfile = await getUserByID(id);
     if (!updatedUser.message) {
@@ -124,7 +125,6 @@ module.exports = users;
 }
 */
 
-
 /* {
   "login": {
       "email": "user1@email.com",
@@ -132,10 +132,10 @@ module.exports = users;
   },
   "profile":
   {
-      "first_name": "Destiny",
-      "last_name": "Joyner",
+      "first_name": "Name",
+      "last_name": "Lastr",
       "education": "Pursuit",
-      "bio": "A full stack web developer from Harlem, NY interested in mobile application design",
+      "bio": "A full stack web developer...",
       "project" : {
           "project_name": "inIT",
           "project_link" : "https://github.com/DestinyJoyner/Init-Job-Search",
