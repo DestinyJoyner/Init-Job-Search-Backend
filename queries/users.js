@@ -26,7 +26,8 @@ const getUserByID = async (userID) => {
       skill_ids: userSkills.map(({ skill_id }) => skill_id),
     };
 
-    const userProject = await getOneProject(userID)
+    const userProject = await getOneProject(+userID)
+    console.log(userProject, "project retrieval")
     if(userProject.user_id){
       oneUser.project = userProject
     }
@@ -35,7 +36,7 @@ const getUserByID = async (userID) => {
         project_link: "",
         project_description: "",
         project_name: "",
-        user_id: userID
+        user_id: +userID
       }
     }
 
