@@ -20,9 +20,15 @@ const updateProject = async (userID, projectObj) => {
   console.log(projectObj, "update before")
 
   try {
-    await db.one("DELETE FROM users_projects WHERE user_id=$1", +userID)
-    const insertProject =  addProject(userID, projectObj)
+    const getProject = getOneProject(userID)
+    if(getProject.project_name){
+      await db.one("DELETE FROM users_projects WHERE user_id=$1", +userID)
+    }
+      
+   const insertProject =  addProject(userID, projectObj)
     console.log(insertProject, " after re add project")
+   
+    
 
     // const searchForProject = await db.any("SELECT * FROM users_projects WHERE user_id=$1", userID)
 
@@ -50,14 +56,8 @@ const getOneProject = async (userID) => {
         return userProject
         
     } catch (error) {
-      
-        return {
-          user_id: +userID,
-          project_name: "",
-          project_link: "",
-          project_description: ""
-
-      }
+      return error
+        
         
     }
 }
@@ -67,3 +67,13 @@ module.exports = {
   updateProject,
   getOneProject
 };
+
+/* 
+return {
+          user_id: +userID,
+          project_name: "",
+          project_link: "",
+          project_description: ""
+
+      }
+*/
