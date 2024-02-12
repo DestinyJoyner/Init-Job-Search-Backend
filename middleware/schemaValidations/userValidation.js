@@ -1,12 +1,14 @@
 const { body } = require("express-validator");
 
 function capitalizeFirst(string) {
-  console.log(string, "capitalize")
-  const newStr = string
-    .split(" ")
-    .map((el) => el[0].toUpperCase() + el.slice(1).toLowerCase())
-    .join(" ");
-  return newStr;
+  const newStrArr = string.split(" ")
+  const capitalizeStrArr = newStrArr.map(el => {
+    const firstCharUpperCase = el.charAt(0).toUpperCase() 
+    const lowercase = el.slice(1).toLowerCase()
+    return `${firstCharUpperCase}${lowercase}`
+  })
+  const capitalizeStr = capitalizeStrArr.join(" ") 
+  return capitalizeStr;
 }
 
 const caseConversion = (req, res, next) => {
