@@ -19,20 +19,22 @@ const updateProject = async (userID, projectObj) => {
   const { project_name, project_link, project_description } = projectObj;
 
   try {
-    let updateOneProject 
-    const searchForProject = await db.any("SELECT * FROM users_projects WHERE user_id=$1", userID)
+    const deleteProject = await db.one("DELETE FROM users_projects WHERE user_id=$1", userID)
+    const updateProject =  await addProject(userID, projectObj)
 
-    if(searchForProject.length === 0) {
-       updateOneProject = await addProject(userID, projectObj)
-    }
-    else {
-        updateOneProject = await db.one(
-      "UPDATE users_projects  project_name=$1, project_link=$2,project_description=$3 WHERE user_id=$4 RETURNING *",
-      [project_name, project_link, project_description, userID]
-    );
+    // const searchForProject = await db.any("SELECT * FROM users_projects WHERE user_id=$1", userID)
+
+    // if(searchForProject.length === 0) {
+    //    updateOneProject = await addProject(userID, projectObj)
+    // }
+    // else {
+    //     updateOneProject = await db.one(
+    //   "UPDATE users_projects  project_name=$1, project_link=$2,project_description=$3 WHERE user_id=$4 RETURNING *",
+    //   [project_name, project_link, project_description, userID]
+    // );
    
-    }
-    return updateOneProject;
+    // }
+    return updateProject;
 
   } catch (error) {
     return error;
