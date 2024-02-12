@@ -23,8 +23,8 @@ const updateProject = async (userID, projectObj) => {
 
   try {
    
-    await db.one("DELETE FROM users_projects WHERE user_id =$1 AND EXISTS (SELECT 1 FROM users_projects WHERE user_id =$1", userID)  
-     
+    await db.one("DELETE FROM users_projects WHERE user_id =$1 AND EXISTS (SELECT 1 FROM users_projects WHERE user_id =$1)", userID)  
+
    const insertProject =  addProject(userID, projectObj)
     console.log(insertProject, " after re add project")
    
