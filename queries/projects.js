@@ -4,6 +4,8 @@ const addProject = async (userID, projectObj) => {
   const { project_name, project_link, project_description } = projectObj;
 
   try {
+    await db.one("DELETE FROM users_projects WHERE user_id =$1 AND EXISTS (SELECT 1 FROM users_projects WHERE user_id =$1", userID)
+
     const addOneProject = await db.one(
       "INSERT INTO users_projects (user_id, project_name, project_link, project_description) VALUES ($1,$2,$3,$4) RETURNING *",
       [userID, project_name, project_link, project_description]
@@ -20,11 +22,9 @@ const updateProject = async (userID, projectObj) => {
   console.log(projectObj, "update before")
 
   try {
-    const getProject = getOneProject(userID)
-    if(getProject.project_name){
-      await db.one("DELETE FROM users_projects WHERE user_id=$1", +userID)
-    }
-      
+   
+    await db.one("DELETE FROM users_projects WHERE user_id =$1 AND EXISTS (SELECT 1 FROM users_projects WHERE user_id =$1", userID)  
+     
    const insertProject =  addProject(userID, projectObj)
     console.log(insertProject, " after re add project")
    

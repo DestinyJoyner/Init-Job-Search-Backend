@@ -26,7 +26,10 @@ const getUserByID = async (userID) => {
       skill_ids: userSkills.map(({ skill_id }) => skill_id),
     };
 
-    oneUser.project = await getOneProject(userID)
+    const userProject = await getOneProject(userID)
+    if(userProject.user_id){
+      oneUser.project = userProject
+    }
 
 
 
