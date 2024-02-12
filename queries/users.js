@@ -30,6 +30,14 @@ const getUserByID = async (userID) => {
     if(userProject.user_id){
       oneUser.project = userProject
     }
+    else {
+      oneUser.project = {
+        project_link: "",
+        project_description: "",
+        project_name: "",
+        user_id: userID
+      }
+    }
 
 
 
