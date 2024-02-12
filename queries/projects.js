@@ -23,7 +23,7 @@ const updateProject = async (userID, projectObj) => {
     const searchForProject = await db.any("SELECT * FROM users_projects WHERE user_id=$1", userID)
 
     if(searchForProject.length === 0) {
-       updateOneProject = addProject(userID, projectObj)
+       updateOneProject = await addProject(userID, projectObj)
     }
     else {
         updateOneProject = await db.one(
