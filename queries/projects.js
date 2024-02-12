@@ -4,7 +4,7 @@ const addProject = async (userID, projectObj) => {
   const { project_name, project_link, project_description } = projectObj;
 
   try {
-    await db.one("DELETE FROM users_projects WHERE user_id =$1 AND EXISTS (SELECT 1 FROM users_projects WHERE user_id =$1", userID)
+     db.one("DELETE FROM users_projects WHERE user_id =$1 AND EXISTS (SELECT 1 FROM users_projects WHERE user_id =$1", userID)
 
     const addOneProject = await db.one(
       "INSERT INTO users_projects (user_id, project_name, project_link, project_description) VALUES ($1,$2,$3,$4) RETURNING *",
