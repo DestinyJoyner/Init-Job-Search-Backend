@@ -67,7 +67,8 @@ const createUser = async ({ profile, skills, login }) => {
       )
     );
 
-    addProject(newUser.id, project);
+   const userProject = await addProject(newUser.id, project);
+   newUser.project = userProject
 
     return newUser;
   } catch (error) {

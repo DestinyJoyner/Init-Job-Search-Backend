@@ -4,8 +4,8 @@ const addProject = async (userID, projectObj) => {
   const { project_name, project_link, project_description } = projectObj;
 
   try {
-    db.one(
-      "DELETE FROM users_projects WHERE user_id =$1 AND EXISTS (SELECT 1 FROM users_projects WHERE user_id =$1",
+    db.oneOrNone(
+      "DELETE FROM users_projects WHERE user_id =$1 AND EXISTS (SELECT 1 FROM users_projects WHERE user_id =$1)",
       userID
     );
 
