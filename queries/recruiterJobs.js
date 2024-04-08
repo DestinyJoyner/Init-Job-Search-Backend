@@ -1,10 +1,11 @@
 const db = require("../db/dbConfig.js");
 
 const getRecruiterJobsSortOptions = async (recruiterID, sortOption = 'id') => {
+  const sortValue = sortOption === "idDesc" ? "id:name DESC" : `${sortOption}:name`
     try {
         const recruiterJobs = await db.any(
-            "SELECT title, company, city, full_remote, id from jobs WHERE recruiter_id=$1 ORDER BY $2:name",
-            [recruiterID, sortOption]
+            "SELECT title, company, city, full_remote, id from jobs WHERE recruiter_id=$1 ORDER BY $2",
+            [recruiterID, sortValue]
           );
 
           const recruiterJobsUsers = await db.any(
