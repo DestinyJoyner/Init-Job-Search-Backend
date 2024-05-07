@@ -22,6 +22,7 @@ const { emailValidation } = require("../middleware/emailValidation.js");
 // Index
 recruiters.get("/", async (req, res) => {
   const allRecruiters = await getAllRecruiters();
+ 
   if (allRecruiters.length) {
     res.status(200).json(allRecruiters);
   } else {
