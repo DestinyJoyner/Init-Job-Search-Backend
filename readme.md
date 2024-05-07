@@ -8,7 +8,7 @@ I enhanced search and filtering functionality by implementing pagination and use
 
 ### Table of Contents
 
-- [Frontend Repo](#init-job-search-frontend-repo)
+- [Frontend Repo](https://github.com/DestinyJoyner/Init-Job-Search)
 - [Live Site](https://init-job-search-engine.netlify.app/)
 - [API Link](https://init-job-search.onrender.com/)
 - [Setup Locally](#setup-locally)
