@@ -75,6 +75,7 @@ jobs.get("/", jobQuerySchema, validationError, async (req, res) => {
   );
 
   if (allJobs.length > 0) {
+    console.log("alljobsArray", allJobs)
     const allJobsWithSkills = await Promise.all(
       allJobs.map(async (job) => {
         let skills = await getSkillsForJobByJobId(job.id);
